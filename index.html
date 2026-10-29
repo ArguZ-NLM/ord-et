@@ -215,6 +215,18 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
 #level-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); width: 100%; }
 .choice.level { align-content: start; }
 #level-choices.off { opacity: .45; }
+.lvl-note { display: none; font-size: .88rem; color: var(--muted); }
+.lvl-note .lex { font-family: var(--font-mono); color: var(--fg); white-space: nowrap; }
+/* phones: compact options so "Start" is visible without scrolling; the chosen level is explained below the row */
+@media (max-width: 560px) {
+  #level-choices, #vocab-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  #count-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  #v-start .choice { padding: 8px 6px; text-align: center; justify-items: center; }
+  #v-start .choice b { font-size: .92rem; }
+  #v-start .choice span { font-size: .78rem; }
+  .choice.level span { display: none; }
+  .lvl-note { display: block; }
+}
 .choice:disabled { opacity: .45; cursor: not-allowed; }
 .choice .lex { font-family: var(--font-mono); font-size: .82rem; color: var(--fg); margin-top: 2px; }
 .rep-list { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -295,18 +307,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
   <!-- ============ START ============ -->
   <section id="v-start" class="card start">
-    <div class="row spread" style="align-items:flex-start">
-      <div style="display:grid;gap:8px;max-width:52ch">
-        <h2 data-i="introH">Ord er bygget af klodser</h2>
-        <p class="muted" data-i="introP">Et morfem er den mindste del af et ord, der betyder noget. Klik mellem bogstaverne for at skære ordet over, der hvor et morfem slutter.</p>
-      </div>
-    </div>
-    <div class="stage">
-      <div class="morphs" id="demo"></div>
-      <p class="muted" style="font-size:.88rem" data-i="demoCap">ulykkelige = forstavelse + rod + afledning + bøjning</p>
-    </div>
-    <div class="legend" id="legend"></div>
-
     <div class="row" style="gap:28px;align-items:flex-start">
       <div style="display:grid;gap:10px;flex:1 1 100%">
         <span class="label" data-i="lvl">Niveau</span>
@@ -315,6 +315,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <button class="choice level" data-level="mellem" aria-pressed="true"><b data-i="lvl_mellem">Mellem</b><span data-i="lvlDesc_mellem"></span><span class="lex">bil-er-ne · u-lykke</span></button>
           <button class="choice level" data-level="svaer" aria-pressed="false"><b data-i="lvl_svaer">Svær</b><span data-i="lvlDesc_svaer"></span><span class="lex">u-lykke-lig-e · be-tal-ing-en</span></button>
         </div>
+        <p class="lvl-note" id="lvl-note"></p>
       </div>
       <div style="display:grid;gap:10px">
         <span class="label" data-i="count">Antal ord</span>
@@ -338,6 +339,18 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <span class="muted" id="start-summary"></span>
       <button class="btn primary" id="btn-start" data-i="start">Start øvelsen →</button>
     </div>
+    <div class="row spread" style="align-items:flex-start">
+      <div style="display:grid;gap:8px;max-width:52ch">
+        <h2 data-i="introH">Ord er bygget af klodser</h2>
+        <p class="muted" data-i="introP">Et morfem er den mindste del af et ord, der betyder noget. Klik mellem bogstaverne for at skære ordet over, der hvor et morfem slutter.</p>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="morphs" id="demo"></div>
+      <p class="muted" style="font-size:.88rem" data-i="demoCap">ulykkelige = forstavelse + rod + afledning + bøjning</p>
+    </div>
+    <div class="legend" id="legend"></div>
+
     <p class="credit" data-ih="credit"></p>
     <div id="history-box" hidden style="display:grid;gap:6px">
       <div class="row spread">
@@ -1107,6 +1120,8 @@ function renderStart() {
   $("legend").innerHTML = TYPE_ORDER.map(k =>
     `<div class="legend-item"><i style="background:var(--t-${k})"></i><b>${TY(k).long}</b><span>${TY(k).what}</span></div>`).join("");
   document.querySelectorAll("#level-choices .choice").forEach(b => b.setAttribute("aria-pressed", b.dataset.level === prefs.level));
+  const lb = document.querySelector(`#level-choices [data-level="${prefs.level}"]`);
+  $("lvl-note").innerHTML = `${esc(t("lvlDesc_" + prefs.level))} · ${lb.querySelector(".lex").textContent.split(" · ").map(x => `<span class="lex">${esc(x)}</span>`).join(" · ")}`;
   document.querySelectorAll("#count-choices .choice").forEach(b => b.setAttribute("aria-pressed", +b.dataset.count === prefs.count));
   updateStartSummary();
   renderReported();
