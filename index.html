@@ -155,7 +155,15 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 @keyframes win-hop { 40% { transform: translateY(-7px); } }
 .spark { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--c); left: var(--x); top: var(--y); pointer-events: none; opacity: 0; animation: spark .9s ease-out forwards; animation-delay: var(--d); }
 @keyframes spark { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.4); } }
-@media (prefers-reduced-motion: reduce) { #v-practice .stage.win, .stage.win .ltr { animation: none; } .spark { display: none; } }
+/* with Reduce Motion on, the same reward without movement: the glow fades, the letters light up green in a wave, the sparks fade in place */
+@media (prefers-reduced-motion: reduce) {
+  #v-practice .stage.win { animation: win-glow .9s ease-out; }
+  .stage.win .ltr { animation: win-tint .6s ease-in-out both; animation-delay: calc(var(--i) * 45ms + 100ms); }
+  .spark { animation-name: spark-fade; }
+}
+@keyframes win-glow { 0% { box-shadow: 0 0 0 0 transparent; } 30% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--ok) 25%, transparent); } 100% { box-shadow: 0 0 0 8px transparent; } }
+@keyframes win-tint { 45% { color: var(--ok); } }
+@keyframes spark-fade { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
 .gap { width: .5em; border: 0; background: none; padding: 0; cursor: pointer; position: relative; flex: none; }
 .gap::before { content: ""; position: absolute; left: 50%; top: -.1em; bottom: -.1em; width: 4px; margin-left: -2px; border-radius: 3px; background: var(--ink); opacity: 0; transform: scaleY(.4); transition: opacity .12s, transform .12s; }
 /* faint preview only with a real mouse; on phones a tapped gap would stay "hovered" and look grey */
