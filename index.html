@@ -203,6 +203,12 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 
 /* ---------- results ---------- */
 .score-big { font-family: var(--font-display); font-weight: 800; font-size: 3.2rem; line-height: 1; font-variant-numeric: tabular-nums; }
+/* a round with every word right: the score pops in green and confetti() fires */
+.score-big.perfect { color: var(--ok); animation: perfect-pop .8s cubic-bezier(.2, 1.6, .4, 1) both, perfect-glow 2.4s ease-in-out .3s 2; }
+@keyframes perfect-pop { 0% { transform: scale(.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes perfect-glow { 50% { text-shadow: 0 0 18px color-mix(in srgb, var(--ok) 55%, transparent); } }
+.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+@media (prefers-reduced-motion: reduce) { .score-big.perfect { animation: perfect-glow 1.6s ease-in-out 3; } }
 .table-wrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: .93rem; }
 th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -345,6 +351,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       </div>
     </div>
     <span class="muted" id="start-summary" style="font-size:.88rem;margin-top:-14px"></span>
+    <button class="btn small" id="btn-test-perfect" hidden style="justify-self:start">🎉 Test: perfekt runde</button>
     <div style="display:grid;gap:10px">
       <span class="label" data-i="lvl">Niveau</span>
       <div class="choices" id="level-choices">
@@ -741,7 +748,7 @@ const STR = {
     alsoOk: "Også godkendt: ",
     autoBadge: "Denne deling er lavet af et program.", report: "Forkert deling?",
     reported: "Tak! Ordet er fjernet fra din ordpulje og tæller ikke med i pointene.",
-    r90: "Flot klaret!", r70: "Godt arbejde", r50: "Du er godt på vej", r0: "Øv videre – det kommer",
+    r100: "Perfekt! Alle rigtige 🎉", r90: "Flot klaret!", r70: "Godt arbejde", r50: "Du er godt på vej", r0: "Øv videre – det kommer",
     resSub: (n, w, label) => `${n} ord · ${w} med fejl · ${label}`,
     thWord: "Ord", thYours: "Dit svar", thRight: "Rigtigt",
     tagReported: "rapporteret", tagSplit: "deling",
@@ -788,7 +795,7 @@ const STR = {
     alsoOk: "Also accepted: ",
     autoBadge: "This split was made by a program.", report: "Wrong split?",
     reported: "Thanks! The word has been removed from your word pool and doesn't count towards your points.",
-    r90: "Excellent!", r70: "Good work", r50: "You're getting there", r0: "Keep practising – you'll get it",
+    r100: "Perfect! All correct 🎉", r90: "Excellent!", r70: "Good work", r50: "You're getting there", r0: "Keep practising – you'll get it",
     resSub: (n, w, label) => `${n} words · ${w} with mistakes · ${label}`,
     thWord: "Word", thYours: "Your answer", thRight: "Correct",
     tagReported: "reported", tagSplit: "split",
@@ -1483,21 +1490,56 @@ document.addEventListener("keydown", e => {
 
 /* ---------- results ---------- */
 function endSession(early) {
-  session.finished = true;
+  session.finished = true; session.early = !!early;
   if (early) session.items = session.items.slice(0, session.results.length);
-  if (session.results.length) {
+  if (session.results.length && !session.test) {
     history.unshift({ ts: Date.now(), ...session.kind, score: points(), max: maxPoints() });
     history = history.slice(0, 8); store.set("history", history);
   }
   $("p-bar").style.width = "100%";
   renderResults();
   show("results");
+  if (points() === maxPoints() && maxPoints() > 0 && !early) confetti();
+}
+// the big reward for a round with every word right; with Reduce Motion the pieces only fade in and out where they are
+function confetti() {
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cv = document.createElement("canvas"), ctx = cv.getContext("2d"), dpr = devicePixelRatio || 1;
+  cv.className = "confetti"; document.body.appendChild(cv);
+  const W = innerWidth, H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.scale(dpr, dpr);
+  const css = getComputedStyle(document.documentElement);
+  const colors = ["F", "R", "A", "B", "L"].map(k => css.getPropertyValue("--t-" + k).trim()).concat(css.getPropertyValue("--ok").trim(), "#f5b700");
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const bits = Array.from({ length: still ? 90 : 170 }, (_, i) => {
+    const left = i % 2 === 0;
+    return still
+      ? { x: rnd(0, W), y: rnd(0, H), vx: 0, vy: 0, r: rnd(0, 6.3), vr: 0, w: rnd(6, 11), h: rnd(4, 7), c: colors[i % colors.length], t0: rnd(0, 500) }
+      : { x: left ? -10 : W + 10, y: H * rnd(.75, 1), vx: (left ? 1 : -1) * rnd(4, 13) * Math.min(1, W / 700 + .4), vy: -rnd(11, 21) * Math.min(1, H / 900 + .3),
+          r: rnd(0, 6.3), vr: rnd(-.3, .3), w: rnd(6, 11), h: rnd(4, 7), c: colors[i % colors.length], t0: rnd(0, 250), wob: rnd(0, 6.3) };
+  });
+  const dur = still ? 2600 : 3400, start = performance.now();
+  (function frame(now) {
+    const t = now - start;
+    if (t > dur || view !== "results") { cv.remove(); return; }
+    ctx.clearRect(0, 0, W, H);
+    bits.forEach(b => {
+      if (t < b.t0) return;
+      if (!still) { b.vy += .38; b.vx *= .985; b.vy *= .985; b.x += b.vx + Math.sin((t + b.wob * 300) / 180) * .8; b.y += b.vy; b.r += b.vr; }
+      const life = still ? Math.min(1, (t - b.t0) / 300) * Math.min(1, (dur - t) / 900) : Math.min(1, (dur - t) / 600);
+      ctx.globalAlpha = Math.max(0, life);
+      ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.r); ctx.scale(1, still ? 1 : Math.cos(t / 120 + b.wob));
+      ctx.fillStyle = b.c; ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h); ctx.restore();
+    });
+    requestAnimationFrame(frame);
+  })(start);
 }
 function renderResults() {
   const max = maxPoints(), pts = points();
   $("r-score").textContent = `${pts}/${max}`;
   const pct = max ? pts / max : 0;
-  $("r-title").textContent = pct >= .9 ? t("r90") : pct >= .7 ? t("r70") : pct >= .5 ? t("r50") : t("r0");
+  const perfect = max > 0 && pts === max && !session.early;
+  $("r-score").classList.toggle("perfect", perfect);
+  $("r-title").textContent = perfect ? t("r100") : pct >= .9 ? t("r90") : pct >= .7 ? t("r70") : pct >= .5 ? t("r50") : t("r0");
   const wrong = session.results.filter(r => !r.reported && !r.splitOk);
   $("r-sub").textContent = t("resSub", session.results.length, wrong.length, roundLabel(session.kind));
   $("r-rows").innerHTML = session.results.map(r =>
@@ -1507,6 +1549,16 @@ function renderResults() {
   $("btn-retry-wrong").onclick = () => startSession(shuffle(wrong.map(r => r.item)));
 }
 $("btn-menu").addEventListener("click", () => { renderStart(); show("start"); });
+// only with ?test in the address: jump straight to the result of a perfect round
+if (new URLSearchParams(location.search).has("test")) {
+  $("btn-test-perfect").hidden = false;
+  $("btn-test-perfect").addEventListener("click", () => {
+    startSession(shuffle(mixedPool()).slice(0, 7));
+    session.test = true;
+    session.results = session.items.map(item => ({ item, userSegs: item.alts[0].segs, alt: item.alts[0], splitOk: true, hint: false }));
+    endSession(false);
+  });
+}
 $("btn-again").addEventListener("click", () => startSession());
 
 /* ---------- init ---------- */
