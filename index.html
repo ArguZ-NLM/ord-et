@@ -164,7 +164,7 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 @keyframes win-glow { 0% { box-shadow: 0 0 0 0 transparent; } 30% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--ok) 25%, transparent); } 100% { box-shadow: 0 0 0 8px transparent; } }
 @keyframes win-tint { 45% { color: var(--ok); } }
 @keyframes spark-fade { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
-.gap { width: .5em; border: 0; background: none; padding: 0; cursor: pointer; position: relative; flex: none; }
+.gap { width: var(--gap, .5em); border: 0; background: none; padding: 0; cursor: pointer; position: relative; flex: none; }
 .gap::before { content: ""; position: absolute; left: 50%; top: -.1em; bottom: -.1em; width: 4px; margin-left: -2px; border-radius: 3px; background: var(--ink); opacity: 0; transform: scaleY(.4); transition: opacity .12s, transform .12s; }
 /* faint preview only with a real mouse; on phones a tapped gap would stay "hovered" and look grey */
 @media (hover: hover) { .gap:not(.cut):hover:not(:disabled)::before { opacity: .18; transform: scaleY(.8); } }
@@ -944,6 +944,7 @@ function show(v) {
   ["start", "practice", "results", "rules"].forEach(x => $("v-" + x).hidden = x !== v);
   document.querySelectorAll(".tab[data-view]").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === (v === "rules" ? "rules" : "practice")));
   window.scrollTo({ top: 0 });
+  if (v === "practice") fitWord();
   requestAnimationFrame(fitMorphs);
 }
 document.querySelectorAll(".tab[data-view]").forEach(b => b.addEventListener("click", () => {
@@ -1300,11 +1301,19 @@ function renderWord(marks) {
   fitWord();
   $("preview").textContent = marks ? "" : segsFromCuts(w, cur.cuts).join(" | ");
 }
+// measure the word at full size and shrink it proportionally until it fits the box
 function fitWord() {
   const el = $("word"); if (!cur) return;
-  const avail = el.parentElement.clientWidth - 24;
-  const n = cur.item.word.length;
-  el.style.fontSize = Math.max(22, Math.min(56, avail / (n * 1.12))) + "px";
+  const st = getComputedStyle(el.parentElement);
+  const avail = el.parentElement.clientWidth - parseFloat(st.paddingLeft) - parseFloat(st.paddingRight);
+  if (avail <= 0) return;  // not on screen yet; show() fits it again
+  // long words: narrower spaces between the letters first, so the letters can stay bigger
+  for (const gap of [".5em", ".3em", ".15em"]) {
+    el.style.setProperty("--gap", gap); el.style.fontSize = "56px";
+    const size = Math.min(56, Math.floor(56 * avail / el.scrollWidth * 10) / 10);
+    el.style.fontSize = size + "px";
+    if (size >= 30) break;
+  }
 }
 window.addEventListener("resize", fitWord);
 
