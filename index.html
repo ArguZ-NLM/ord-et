@@ -151,7 +151,8 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .gap.extra::after { content: "×"; position: absolute; left: 50%; top: -.75em; transform: translateX(-50%); font-size: .4em; color: var(--bad); font-weight: 700; }
 .gap.miss::before { background: repeating-linear-gradient(to bottom, var(--miss) 0 6px, transparent 6px 11px); opacity: 1; transform: none; }
 .gap.miss::after { content: var(--miss-label, "mangler"); position: absolute; left: 50%; bottom: -1.05em; transform: translateX(-50%); font-family: var(--font-body); font-size: .2em; color: var(--miss); font-weight: 700; white-space: nowrap; }
-.preview { font-family: var(--font-mono); color: var(--muted); font-size: 1rem; min-height: 1.5em; text-align: center; }
+/* the split as text, for screen readers only */
+.preview { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .instr { display: flex; gap: 8px; flex-wrap: wrap; justify-content: space-between; align-items: baseline; }
 
 .feedback { border-radius: 12px; padding: 16px 18px; display: grid; gap: 12px; border: 1.5px solid var(--line); background: var(--surface-2); }
