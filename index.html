@@ -147,23 +147,19 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .stage { background: var(--surface-2); border: 1px dashed var(--line); border-radius: 12px; padding: 28px 12px 22px; overflow-x: auto; display: grid; justify-items: center; gap: 12px; }
 .word { display: flex; align-items: stretch; font-family: var(--font-mono); font-weight: 600; font-size: 48px; line-height: 1; user-select: none; -webkit-user-select: none; white-space: nowrap; touch-action: manipulation; }
 .ltr { padding: .12em 0; cursor: pointer; }
-/* small reward when the split is right: the box turns green and pops, the letters do a wave, a few sparks float up */
+/* small reward when the split is right: the box turns green and pops, the letters do a wave */
 #v-practice .stage { position: relative; transition: border-color .3s; }
 #v-practice .stage.win { border-style: solid; border-color: var(--ok); animation: win-pop .55s ease-out; }
 @keyframes win-pop { 0% { transform: scale(1); box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 40%, transparent); } 30% { transform: scale(1.015); } 100% { transform: scale(1); box-shadow: 0 0 0 14px transparent; } }
 .stage.win .ltr { animation: win-hop .42s ease-out both; animation-delay: calc(var(--i) * 35ms + 100ms); }
 @keyframes win-hop { 40% { transform: translateY(-7px); } }
-.spark { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--c); left: var(--x); top: var(--y); pointer-events: none; opacity: 0; animation: spark .9s ease-out forwards; animation-delay: var(--d); }
-@keyframes spark { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.4); } }
-/* with Reduce Motion on, the same reward without movement: the glow fades, the letters light up green in a wave, the sparks fade in place */
+/* with Reduce Motion on, the same reward without movement: the glow fades, the letters light up green in a wave */
 @media (prefers-reduced-motion: reduce) {
   #v-practice .stage.win { animation: win-glow .9s ease-out; }
   .stage.win .ltr { animation: win-tint .6s ease-in-out both; animation-delay: calc(var(--i) * 45ms + 100ms); }
-  .spark { animation-name: spark-fade; }
 }
 @keyframes win-glow { 0% { box-shadow: 0 0 0 0 transparent; } 30% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--ok) 25%, transparent); } 100% { box-shadow: 0 0 0 8px transparent; } }
 @keyframes win-tint { 45% { color: var(--ok); } }
-@keyframes spark-fade { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
 .gap { width: var(--gap, .5em); border: 0; background: none; padding: 0; cursor: pointer; position: relative; flex: none; }
 .gap::before { content: ""; position: absolute; left: 50%; top: -.1em; bottom: -.1em; width: 4px; margin-left: -2px; border-radius: 3px; background: var(--ink); opacity: 0; transform: scaleY(.4); transition: opacity .12s, transform .12s; }
 /* faint preview only with a real mouse; on phones a tapped gap would stay "hovered" and look grey */
@@ -1438,16 +1434,7 @@ function checkSplit() {
 }
 function celebrate() {
   const stage = $("word").parentElement;
-  stage.querySelectorAll(".spark").forEach(sp => sp.remove());
   stage.classList.remove("win"); void stage.offsetWidth; stage.classList.add("win");
-  const box = stage.getBoundingClientRect(), wr = $("word").getBoundingClientRect();
-  const colors = ["F", "A", "B", "L", "R"];
-  for (let i = 0; i < 9; i++) {
-    const sp = document.createElement("span"); sp.className = "spark";
-    const x = wr.left - box.left + wr.width * (i + .5) / 9, y = wr.top - box.top + wr.height * .35;
-    sp.style.cssText = `--c:var(--t-${colors[i % 5]});--x:${x}px;--y:${y}px;--dx:${Math.round((Math.random() - .5) * 40)}px;--dy:${-Math.round(26 + Math.random() * 26)}px;--d:${120 + i * 30}ms`;
-    stage.appendChild(sp); setTimeout(() => sp.remove(), 1400);
-  }
 }
 function renderFeedback() {
   renderWord(cur.marks);
