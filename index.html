@@ -147,6 +147,15 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .stage { background: var(--surface-2); border: 1px dashed var(--line); border-radius: 12px; padding: 28px 12px 22px; overflow-x: auto; display: grid; justify-items: center; gap: 12px; }
 .word { display: flex; align-items: stretch; font-family: var(--font-mono); font-weight: 600; font-size: 48px; line-height: 1; user-select: none; -webkit-user-select: none; white-space: nowrap; touch-action: manipulation; }
 .ltr { padding: .12em 0; cursor: pointer; }
+/* small reward when the split is right: the box turns green and pops, the letters do a wave, a few sparks float up */
+#v-practice .stage { position: relative; transition: border-color .3s; }
+#v-practice .stage.win { border-style: solid; border-color: var(--ok); animation: win-pop .55s ease-out; }
+@keyframes win-pop { 0% { transform: scale(1); box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 40%, transparent); } 30% { transform: scale(1.015); } 100% { transform: scale(1); box-shadow: 0 0 0 14px transparent; } }
+.stage.win .ltr { animation: win-hop .42s ease-out both; animation-delay: calc(var(--i) * 35ms + 100ms); }
+@keyframes win-hop { 40% { transform: translateY(-7px); } }
+.spark { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--c); left: var(--x); top: var(--y); pointer-events: none; opacity: 0; animation: spark .9s ease-out forwards; animation-delay: var(--d); }
+@keyframes spark { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.4); } }
+@media (prefers-reduced-motion: reduce) { #v-practice .stage.win, .stage.win .ltr { animation: none; } .spark { display: none; } }
 .gap { width: .5em; border: 0; background: none; padding: 0; cursor: pointer; position: relative; flex: none; }
 .gap::before { content: ""; position: absolute; left: 50%; top: -.1em; bottom: -.1em; width: 4px; margin-left: -2px; border-radius: 3px; background: var(--ink); opacity: 0; transform: scaleY(.4); transition: opacity .12s, transform .12s; }
 /* faint preview only with a real mouse; on phones a tapped gap would stay "hovered" and look grey */
@@ -349,7 +358,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     </div>
     <div class="stage">
       <div id="demo"></div>
-      <p class="muted" style="font-size:.88rem" data-i="demoCap">sygdomsforløbet = rod + afledning + bindebogstav + forstavelse + rod + bøjning</p>
     </div>
     <div class="legend" id="legend"></div>
     <div style="display:grid;gap:10px">
@@ -696,7 +704,6 @@ const STR = {
     sub: "Del ordene i morfemer", tabPractice: "Øv", tabRules: "Regelbog",
     introH: "Ord er bygget af klodser",
     introP: "Et morfem er den mindste del af et ord, der betyder noget. Klik mellem bogstaverne for at skære ordet over, der hvor et morfem slutter.",
-    demoCap: "sygdomsforløbet = rod + afledning + bindebogstav + forstavelse + rod + bøjning",
     lvl: "Niveau", lvl_let: "Let", lvl_mellem: "Mellem", lvl_svaer: "Svær",
     lvlDesc_let: "Ét ord med én endelse eller to ord sat sammen",
     lvlDesc_mellem: "Tre morfemer eller en forstavelse/afledning",
@@ -744,7 +751,6 @@ const STR = {
     sub: "Split words into morphemes", tabPractice: "Practice", tabRules: "Rule book",
     introH: "Words are built from blocks",
     introP: "A morpheme is the smallest part of a word that carries meaning. Click between the letters to cut the word where a morpheme ends.",
-    demoCap: "sygdomsforløbet (the course of the illness) = root + derivational suffix + linking letter + prefix + root + inflection",
     lvl: "Level", lvl_let: "Easy", lvl_mellem: "Medium", lvl_svaer: "Hard",
     lvlDesc_let: "One word with one ending, or two words put together",
     lvlDesc_mellem: "Three morphemes, or a prefix / derivational suffix",
@@ -1264,6 +1270,7 @@ function loadWord() {
   $("p-bar").style.width = (session.idx / session.items.length * 100) + "%";
   $("hint-text").textContent = "";
   $("feedback").hidden = true; $("next-row").hidden = true;
+  $("word").parentElement.classList.remove("win");
   $("split-actions").hidden = false;
   $("btn-hint").disabled = false;
   renderPracticeChrome();
@@ -1279,7 +1286,7 @@ function renderWord(marks) {
       const m = marks ? marks[i] : (cur.cuts.has(i) ? "cut" : "");
       h += `<button class="gap ${m || ""}" data-gap="${i}" aria-pressed="${cur.cuts.has(i)}" aria-label="${esc(t("gapLabel", w[i - 1], w[i]))}" ${marks ? "disabled" : ""}></button>`;
     }
-    h += `<span class="ltr" data-i="${i}">${esc(w[i])}</span>`;
+    h += `<span class="ltr" data-i="${i}" style="--i:${i}">${esc(w[i])}</span>`;
   }
   el.innerHTML = h;
   fitWord();
@@ -1406,10 +1413,24 @@ function checkSplit() {
   session.results.push({ item: cur.item, userSegs: segsFromCuts(cur.item.word, cur.cuts), alt, splitOk: ok, hint: cur.hint });
   noteMistake(cur.item.word, !ok);
   renderFeedback();
+  if (ok) celebrate();
   $("p-score").textContent = t("points", points());
   $("next-row").hidden = false;
   setNextLabel();
   $("btn-next").focus({ preventScroll: true });
+}
+function celebrate() {
+  const stage = $("word").parentElement;
+  stage.querySelectorAll(".spark").forEach(sp => sp.remove());
+  stage.classList.remove("win"); void stage.offsetWidth; stage.classList.add("win");
+  const box = stage.getBoundingClientRect(), wr = $("word").getBoundingClientRect();
+  const colors = ["F", "A", "B", "L", "R"];
+  for (let i = 0; i < 9; i++) {
+    const sp = document.createElement("span"); sp.className = "spark";
+    const x = wr.left - box.left + wr.width * (i + .5) / 9, y = wr.top - box.top + wr.height * .35;
+    sp.style.cssText = `--c:var(--t-${colors[i % 5]});--x:${x}px;--y:${y}px;--dx:${Math.round((Math.random() - .5) * 40)}px;--dy:${-Math.round(26 + Math.random() * 26)}px;--d:${120 + i * 30}ms`;
+    stage.appendChild(sp); setTimeout(() => sp.remove(), 1400);
+  }
 }
 function renderFeedback() {
   renderWord(cur.marks);
