@@ -143,7 +143,8 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .ltr { padding: .12em 0; cursor: pointer; }
 .gap { width: .5em; border: 0; background: none; padding: 0; cursor: pointer; position: relative; flex: none; }
 .gap::before { content: ""; position: absolute; left: 50%; top: -.1em; bottom: -.1em; width: 4px; margin-left: -2px; border-radius: 3px; background: var(--ink); opacity: 0; transform: scaleY(.4); transition: opacity .12s, transform .12s; }
-.gap:hover:not(:disabled)::before { opacity: .18; transform: scaleY(.8); }
+/* faint preview only with a real mouse; on phones a tapped gap would stay "hovered" and look grey */
+@media (hover: hover) { .gap:not(.cut):hover:not(:disabled)::before { opacity: .18; transform: scaleY(.8); } }
 .gap.cut::before { opacity: 1; transform: none; }
 .gap:disabled { cursor: default; }
 .gap.ok::before { background: var(--ok); opacity: 1; transform: none; }
