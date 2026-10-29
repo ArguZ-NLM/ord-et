@@ -127,7 +127,10 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .m .tlabel { position: absolute; left: 50%; top: 100%; margin-top: 2px; width: 0; display: flex; justify-content: center; white-space: nowrap; letter-spacing: .02em; line-height: 1.5; transform: translate(var(--dx, 0px), calc(var(--lv, 0) * 1.5em)); }
 .m .tlabel.up { top: auto; bottom: 100%; margin: 0 0 2px; transform: translate(var(--dx, 0px), calc(var(--lv, 0) * -1.5em)); }
 .morphs { padding-block: calc(var(--up, 0) * 1.1rem) calc(var(--down, 1) * 1.1rem); row-gap: calc(6px + (var(--up, 0) + var(--down, 1)) * 1.1rem); }
-@media (max-width: 560px) { #demo .morphs { column-gap: 4px; } #demo .m .seg { font-size: clamp(.8rem, 4.6vw, 1.05rem); padding: 2px 5px 4px; } }
+/* the start-page example fills the grey box: fitDemo() sets --demo-size from the box width */
+#demo .morphs { column-gap: .25em; font-size: var(--demo-size, 1.35rem); }
+#demo .m .seg { font-size: 1em; padding: .08em .3em .15em; border-bottom-width: .14em; }
+#demo .m .tlabel { font-size: max(.7rem, .3em); }
 .m[data-t="F"] .seg { border-color: var(--t-F); background: var(--tint-F); } .m[data-t="F"] .tlabel { color: var(--t-F); }
 .m[data-t="R"] .seg { border-color: var(--t-R); background: var(--tint-R); } .m[data-t="R"] .tlabel { color: var(--t-R); }
 .m[data-t="A"] .seg { border-color: var(--t-A); background: var(--tint-A); } .m[data-t="A"] .tlabel { color: var(--t-A); }
@@ -981,7 +984,17 @@ function morphHTML(segs, types) {
     return `<span class="m" ${k ? `data-t="${k}"` : ""}><span class="seg">${esc(s)}</span><span class="tlabel"><span>${k ? TY(k).name : "&nbsp;"}</span></span></span>`;
   }).join("") + "</div>";
 }
+function fitDemo() {
+  const d = $("demo"); if (!d || !d.offsetParent) return;
+  const st = getComputedStyle(d.parentElement);
+  const avail = d.parentElement.clientWidth - parseFloat(st.paddingLeft) - parseFloat(st.paddingRight);
+  const row = () => [...d.querySelectorAll(".m")].reduce((w, m) => w + m.getBoundingClientRect().width, 0) + parseFloat(getComputedStyle(d.firstElementChild).columnGap) * (d.querySelectorAll(".m").length - 1);
+  // font size scales the blocks proportionally; measure once at 20px and scale to ~88 % of the box (max 48px)
+  d.style.setProperty("--demo-size", "20px");
+  d.style.setProperty("--demo-size", Math.max(12, Math.min(48, Math.floor(20 * avail * .88 / row()))) + "px");
+}
 function fitMorphs() {
+  fitDemo();
   document.querySelectorAll(".morphs").forEach(box => {
     if (!box.offsetParent) return;
     const ms = [...box.querySelectorAll(".m")];
