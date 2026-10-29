@@ -122,9 +122,11 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .m { display: inline-grid; justify-items: center; gap: 2px; }
 .m .seg { font-size: 1.35rem; font-weight: 600; padding: 2px 8px 4px; border-radius: 6px; background: var(--surface-2); border-bottom: 4px solid var(--line); line-height: 1.2; }
 .m .tlabel { font-family: var(--font-body); font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
-/* blocks are as wide as their letters; labels stick out and fitMorphs() drops one a line when two would collide */
-.m .tlabel { width: 0; display: flex; justify-content: center; white-space: nowrap; letter-spacing: .02em; transform: translate(var(--dx, 0px), calc(var(--lv, 0) * 1.6em)); }
-.morphs { padding-bottom: calc(var(--lines, 0) * 1.15rem); row-gap: calc(6px + var(--lines, 0) * 1.15rem); }
+/* blocks are as wide as their letters; labels alternate below / above (fitMorphs) and only take another line if they still collide */
+.m { position: relative; }
+.m .tlabel { position: absolute; left: 50%; top: 100%; margin-top: 2px; width: 0; display: flex; justify-content: center; white-space: nowrap; letter-spacing: .02em; line-height: 1.5; transform: translate(var(--dx, 0px), calc(var(--lv, 0) * 1.5em)); }
+.m .tlabel.up { top: auto; bottom: 100%; margin: 0 0 2px; transform: translate(var(--dx, 0px), calc(var(--lv, 0) * -1.5em)); }
+.morphs { padding-block: calc(var(--up, 0) * 1.1rem) calc(var(--down, 1) * 1.1rem); row-gap: calc(6px + (var(--up, 0) + var(--down, 1)) * 1.1rem); }
 @media (max-width: 560px) { #demo .morphs { gap: 4px; } #demo .m .seg { font-size: 1.05rem; padding: 2px 5px 4px; } }
 .m[data-t="F"] .seg { border-color: var(--t-F); background: var(--tint-F); } .m[data-t="F"] .tlabel { color: var(--t-F); }
 .m[data-t="R"] .seg { border-color: var(--t-R); background: var(--tint-R); } .m[data-t="R"] .tlabel { color: var(--t-R); }
@@ -219,12 +221,18 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
 #level-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); width: 100%; }
 .choice.level { align-content: start; }
 #level-choices.off { opacity: .45; }
+.start-top { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.start-top #btn-start { min-height: 48px; padding-inline: 28px; font-size: 1.05rem; letter-spacing: .06em; }
+.count-group { display: grid; gap: 6px; }
 .lvl-note { display: none; font-size: .88rem; color: var(--muted); }
 .lvl-note .lex { font-family: var(--font-mono); color: var(--fg); white-space: nowrap; }
 /* phones: compact options so "Start" is visible without scrolling; the chosen level is explained below the row */
 @media (max-width: 560px) {
   #level-choices, #vocab-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  #count-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .start-top { flex-wrap: nowrap; gap: 10px; }
+  .start-top #btn-start { padding-inline: 16px; flex: none; }
+  .count-group { flex: 1; min-width: 0; }
+  #count-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
   #v-start .choice { padding: 8px 6px; text-align: center; justify-items: center; }
   #v-start .choice b { font-size: .92rem; }
   #v-start .choice span { font-size: .78rem; }
@@ -311,17 +319,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
   <!-- ============ START ============ -->
   <section id="v-start" class="card start">
-    <div class="row" style="gap:28px;align-items:flex-start">
-      <div style="display:grid;gap:10px;flex:1 1 100%">
-        <span class="label" data-i="lvl">Niveau</span>
-        <div class="choices" id="level-choices">
-          <button class="choice level" data-level="let" aria-pressed="false"><b data-i="lvl_let">Let</b><span data-i="lvlDesc_let"></span><span class="lex">bil-er · fod-bold</span></button>
-          <button class="choice level" data-level="mellem" aria-pressed="true"><b data-i="lvl_mellem">Mellem</b><span data-i="lvlDesc_mellem"></span><span class="lex">bil-er-ne · u-lykke</span></button>
-          <button class="choice level" data-level="svaer" aria-pressed="false"><b data-i="lvl_svaer">Svær</b><span data-i="lvlDesc_svaer"></span><span class="lex">u-lykke-lig-e · be-tal-ing-en</span></button>
-        </div>
-        <p class="lvl-note" id="lvl-note"></p>
-      </div>
-      <div style="display:grid;gap:10px">
+    <div class="start-top">
+      <button class="btn primary" id="btn-start" data-i="start">START</button>
+      <div class="count-group">
         <span class="label" data-i="count">Antal ord</span>
         <div class="choices" id="count-choices">
           <button class="choice compact" data-count="7" aria-pressed="false"><b>7</b></button>
@@ -330,18 +330,16 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <button class="choice compact" data-count="0" aria-pressed="false"><b data-i="countAll">Alle</b></button>
         </div>
       </div>
-      <div style="display:grid;gap:10px">
-        <span class="label" data-i="which">Hvilke ord</span>
-        <div class="choices" id="vocab-choices">
-          <button class="choice compact" data-vocab="common"><b data-i="vocab_common">Almindelige</b><span id="vc-common"></span></button>
-          <button class="choice compact" data-vocab="all"><b data-i="vocab_all">Alle ord</b><span id="vc-all"></span></button>
-          <button class="choice compact" data-vocab="mistakes"><b data-i="vocab_mistakes">Mine fejlord</b><span id="vc-mistakes"></span></button>
-        </div>
-      </div>
     </div>
-    <div class="row spread">
-      <span class="muted" id="start-summary"></span>
-      <button class="btn primary" id="btn-start" data-i="start">Start øvelsen →</button>
+    <span class="muted" id="start-summary" style="font-size:.88rem;margin-top:-14px"></span>
+    <div style="display:grid;gap:10px">
+      <span class="label" data-i="lvl">Niveau</span>
+      <div class="choices" id="level-choices">
+          <button class="choice level" data-level="let" aria-pressed="false"><b data-i="lvl_let">Let</b><span data-i="lvlDesc_let"></span><span class="lex">bil-er · fod-bold</span></button>
+          <button class="choice level" data-level="mellem" aria-pressed="true"><b data-i="lvl_mellem">Mellem</b><span data-i="lvlDesc_mellem"></span><span class="lex">bil-er-ne · u-lykke</span></button>
+          <button class="choice level" data-level="svaer" aria-pressed="false"><b data-i="lvl_svaer">Svær</b><span data-i="lvlDesc_svaer"></span><span class="lex">u-lykke-lig-e · be-tal-ing-en</span></button>
+        </div>
+      <p class="lvl-note" id="lvl-note"></p>
     </div>
     <div class="row spread" style="align-items:flex-start">
       <div style="display:grid;gap:8px;max-width:52ch">
@@ -354,6 +352,14 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <p class="muted" style="font-size:.88rem" data-i="demoCap">sygdomsforløbet = rod + afledning + bindebogstav + forstavelse + rod + bøjning</p>
     </div>
     <div class="legend" id="legend"></div>
+    <div style="display:grid;gap:10px">
+      <span class="label" data-i="which">Hvilke ord</span>
+      <div class="choices" id="vocab-choices">
+          <button class="choice compact" data-vocab="common"><b data-i="vocab_common">Almindelige</b><span id="vc-common"></span></button>
+          <button class="choice compact" data-vocab="all"><b data-i="vocab_all">Alle ord</b><span id="vc-all"></span></button>
+          <button class="choice compact" data-vocab="mistakes"><b data-i="vocab_mistakes">Mine fejlord</b><span id="vc-mistakes"></span></button>
+        </div>
+    </div>
 
     <p class="credit" data-ih="credit"></p>
     <div id="history-box" hidden style="display:grid;gap:6px">
@@ -698,7 +704,7 @@ const STR = {
     count: "Antal ord", countAll: "Alle", which: "Hvilke ord",
     vocab_common: "Almindelige", vocab_all: "Alle ord", vocab_mistakes: "Mine fejlord",
     nWords: n => `${n} ord`,
-    start: "Start øvelsen →",
+    start: "START",
     summary: (n, common, lvl, total) => `${n} tilfældige ${common ? "almindelige " : ""}ord på niveau ${lvl.toLowerCase()} (ud af ${total})`,
     summaryMis: (n, total) => `${n} af dine ${total} fejlord (fra alle niveauer)`,
     credit: `Ordene kommer fra <a href="https://www.stavekontrolden.dk" target="_blank" rel="noopener">Stavekontrolden</a> – den frie danske stave-ordbog – og er udvalgt efter hvor almindelige de er med <a href="https://github.com/rspeer/wordfreq" target="_blank" rel="noopener">wordfreq</a>. Delingen er lavet af et program, så tryk <b>Forkert deling?</b> hvis du finder en fejl.`,
@@ -746,7 +752,7 @@ const STR = {
     count: "Number of words", countAll: "All", which: "Which words",
     vocab_common: "Common", vocab_all: "All words", vocab_mistakes: "My mistakes",
     nWords: n => `${n} words`,
-    start: "Start practising →",
+    start: "START",
     summary: (n, common, lvl, total) => `${n} random ${common ? "common " : ""}words, level ${lvl.toLowerCase()} (out of ${total})`,
     summaryMis: (n, total) => `${n} of your ${total} mistake words (all levels)`,
     credit: `The words come from <a href="https://www.stavekontrolden.dk" target="_blank" rel="noopener">Stavekontrolden</a> – the free Danish spelling dictionary – and are chosen by how common they are using <a href="https://github.com/rspeer/wordfreq" target="_blank" rel="noopener">wordfreq</a>. The splitting is done by a program, so press <b>Wrong split?</b> if you find a mistake.`,
@@ -960,23 +966,23 @@ function morphHTML(segs, types) {
 function fitMorphs() {
   document.querySelectorAll(".morphs").forEach(box => {
     if (!box.offsetParent) return;
-    box.style.removeProperty("--lines");
-    box.querySelectorAll(".tlabel").forEach(l => { l.style.removeProperty("--dx"); l.style.removeProperty("--lv"); });
-    const bb = box.getBoundingClientRect();
-    let rowTop = null, right = [], most = 0;
-    box.querySelectorAll(".m").forEach(m => {
-      const l = m.querySelector(".tlabel");
+    const ms = [...box.querySelectorAll(".m")];
+    ms.forEach((m, i) => { const l = m.querySelector(".tlabel"); l.classList.toggle("up", i % 2 === 1); l.style.removeProperty("--dx"); l.style.removeProperty("--lv"); });
+    const bb = box.getBoundingClientRect(), lines = [0, 0];
+    let rowTop = null, right = [[], []];
+    ms.forEach((m, i) => {
+      const l = m.querySelector(".tlabel"), side = i % 2;
       const top = m.querySelector(".seg").getBoundingClientRect().top;
-      if (rowTop === null || Math.abs(top - rowTop) > 5) { rowTop = top; right = []; }
+      if (rowTop === null || Math.abs(top - rowTop) > 5) { rowTop = top; right = [[], []]; }
       const r = l.firstElementChild.getBoundingClientRect();
       const dx = r.left < bb.left ? bb.left - r.left : r.right > bb.right ? bb.right - r.right : 0;
-      // first label line where it does not touch the label before it
-      let lvl = 0; while (lvl < right.length && r.left + dx < right[lvl] + 6) lvl++;
-      right[lvl] = r.right + dx; most = Math.max(most, lvl);
+      // first line on this side where the label does not touch the one before it
+      const rs = right[side]; let lvl = 0; while (lvl < rs.length && r.left + dx < rs[lvl] + 6) lvl++;
+      rs[lvl] = r.right + dx; lines[side] = Math.max(lines[side], lvl + 1);
       if (dx) l.style.setProperty("--dx", dx + "px");
       if (lvl) l.style.setProperty("--lv", lvl);
     });
-    if (most) box.style.setProperty("--lines", most);
+    box.style.setProperty("--down", lines[0]); box.style.setProperty("--up", lines[1]);
   });
 }
 window.addEventListener("resize", fitMorphs);
