@@ -122,6 +122,10 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .m { display: inline-grid; justify-items: center; gap: 2px; }
 .m .seg { font-size: 1.35rem; font-weight: 600; padding: 2px 8px 4px; border-radius: 6px; background: var(--surface-2); border-bottom: 4px solid var(--line); line-height: 1.2; }
 .m .tlabel { font-family: var(--font-body); font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+/* blocks are as wide as their letters; labels stick out and fitMorphs() drops one a line when two would collide */
+.m .tlabel { width: 0; display: flex; justify-content: center; white-space: nowrap; letter-spacing: .02em; transform: translate(var(--dx, 0px), calc(var(--lv, 0) * 1.6em)); }
+.morphs { padding-bottom: calc(var(--lines, 0) * 1.15rem); row-gap: calc(6px + var(--lines, 0) * 1.15rem); }
+@media (max-width: 560px) { #demo .morphs { gap: 4px; } #demo .m .seg { font-size: 1.05rem; padding: 2px 5px 4px; } }
 .m[data-t="F"] .seg { border-color: var(--t-F); background: var(--tint-F); } .m[data-t="F"] .tlabel { color: var(--t-F); }
 .m[data-t="R"] .seg { border-color: var(--t-R); background: var(--tint-R); } .m[data-t="R"] .tlabel { color: var(--t-R); }
 .m[data-t="A"] .seg { border-color: var(--t-A); background: var(--tint-A); } .m[data-t="A"] .tlabel { color: var(--t-A); }
@@ -346,8 +350,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       </div>
     </div>
     <div class="stage">
-      <div class="morphs" id="demo"></div>
-      <p class="muted" style="font-size:.88rem" data-i="demoCap">ulykkelige = forstavelse + rod + afledning + bøjning</p>
+      <div id="demo"></div>
+      <p class="muted" style="font-size:.88rem" data-i="demoCap">sygdomsforløbet = rod + afledning + bindebogstav + forstavelse + rod + bøjning</p>
     </div>
     <div class="legend" id="legend"></div>
 
@@ -686,7 +690,7 @@ const STR = {
     sub: "Del ordene i morfemer", tabPractice: "Øv", tabRules: "Regelbog",
     introH: "Ord er bygget af klodser",
     introP: "Et morfem er den mindste del af et ord, der betyder noget. Klik mellem bogstaverne for at skære ordet over, der hvor et morfem slutter.",
-    demoCap: "ulykkelige = forstavelse + rod + afledning + bøjning",
+    demoCap: "sygdomsforløbet = rod + afledning + bindebogstav + forstavelse + rod + bøjning",
     lvl: "Niveau", lvl_let: "Let", lvl_mellem: "Mellem", lvl_svaer: "Svær",
     lvlDesc_let: "Ét ord med én endelse eller to ord sat sammen",
     lvlDesc_mellem: "Tre morfemer eller en forstavelse/afledning",
@@ -734,7 +738,7 @@ const STR = {
     sub: "Split words into morphemes", tabPractice: "Practice", tabRules: "Rule book",
     introH: "Words are built from blocks",
     introP: "A morpheme is the smallest part of a word that carries meaning. Click between the letters to cut the word where a morpheme ends.",
-    demoCap: "ulykkelige (unhappy) = prefix + root + derivational suffix + inflection",
+    demoCap: "sygdomsforløbet (the course of the illness) = root + derivational suffix + linking letter + prefix + root + inflection",
     lvl: "Level", lvl_let: "Easy", lvl_mellem: "Medium", lvl_svaer: "Hard",
     lvlDesc_let: "One word with one ending, or two words put together",
     lvlDesc_mellem: "Three morphemes, or a prefix / derivational suffix",
@@ -920,6 +924,7 @@ function show(v) {
   ["start", "practice", "results", "rules"].forEach(x => $("v-" + x).hidden = x !== v);
   document.querySelectorAll(".tab[data-view]").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === (v === "rules" ? "rules" : "practice")));
   window.scrollTo({ top: 0 });
+  requestAnimationFrame(fitMorphs);
 }
 document.querySelectorAll(".tab[data-view]").forEach(b => b.addEventListener("click", () => {
   if (b.dataset.view === "rules") { renderRules(); show("rules"); showRuleSec(null); }
@@ -949,9 +954,33 @@ document.querySelectorAll(".tab[data-lang]").forEach(b => b.addEventListener("cl
 function morphHTML(segs, types) {
   return '<div class="morphs">' + segs.map((s, i) => {
     const k = types ? types[i] : null;
-    return `<span class="m" ${k ? `data-t="${k}"` : ""}><span class="seg">${esc(s)}</span><span class="tlabel">${k ? TY(k).name : "&nbsp;"}</span></span>`;
+    return `<span class="m" ${k ? `data-t="${k}"` : ""}><span class="seg">${esc(s)}</span><span class="tlabel"><span>${k ? TY(k).name : "&nbsp;"}</span></span></span>`;
   }).join("") + "</div>";
 }
+function fitMorphs() {
+  document.querySelectorAll(".morphs").forEach(box => {
+    if (!box.offsetParent) return;
+    box.style.removeProperty("--lines");
+    box.querySelectorAll(".tlabel").forEach(l => { l.style.removeProperty("--dx"); l.style.removeProperty("--lv"); });
+    const bb = box.getBoundingClientRect();
+    let rowTop = null, right = [], most = 0;
+    box.querySelectorAll(".m").forEach(m => {
+      const l = m.querySelector(".tlabel");
+      const top = m.querySelector(".seg").getBoundingClientRect().top;
+      if (rowTop === null || Math.abs(top - rowTop) > 5) { rowTop = top; right = []; }
+      const r = l.firstElementChild.getBoundingClientRect();
+      const dx = r.left < bb.left ? bb.left - r.left : r.right > bb.right ? bb.right - r.right : 0;
+      // first label line where it does not touch the label before it
+      let lvl = 0; while (lvl < right.length && r.left + dx < right[lvl] + 6) lvl++;
+      right[lvl] = r.right + dx; most = Math.max(most, lvl);
+      if (dx) l.style.setProperty("--dx", dx + "px");
+      if (lvl) l.style.setProperty("--lv", lvl);
+    });
+    if (most) box.style.setProperty("--lines", most);
+  });
+}
+window.addEventListener("resize", fitMorphs);
+if (document.fonts) document.fonts.ready.then(fitMorphs);
 
 /* =====================================================================
    RULE BOOK
@@ -1116,7 +1145,8 @@ $("rules-list").addEventListener("click", e => {
    ===================================================================== */
 const levelName = l => t("lvl_" + l);
 function renderStart() {
-  $("demo").innerHTML = morphHTML(["u", "lykke", "lig", "e"], ["F", "R", "A", "B"]);
+  $("demo").innerHTML = morphHTML(["syg", "dom", "s", "for", "løb", "et"], ["R", "A", "L", "F", "R", "B"]);
+  requestAnimationFrame(fitMorphs);
   $("legend").innerHTML = TYPE_ORDER.map(k =>
     `<div class="legend-item"><i style="background:var(--t-${k})"></i><b>${TY(k).long}</b><span>${TY(k).what}</span></div>`).join("");
   document.querySelectorAll("#level-choices .choice").forEach(b => b.setAttribute("aria-pressed", b.dataset.level === prefs.level));
@@ -1388,7 +1418,7 @@ function renderFeedback() {
   if (cur.item.note) h += `<p class="note">${esc(noteText(cur.item.note))}</p>`;
   if (cur.item.auto) h += `<div class="row auto-row"><span class="muted" style="font-size:.88rem">${t("autoBadge")}</span>` +
     (rec.reported ? `<span class="muted" style="font-size:.9rem">${t("reported")}</span>` : `<button class="btn small" id="btn-report">${t("report")}</button>`) + "</div>";
-  fb.innerHTML = h; fb.hidden = false;
+  fb.innerHTML = h; fb.hidden = false; fitMorphs();
 }
 function explainHTML(alt) {
   return '<ul class="explain">' + alt.segs.map((s, i) =>
