@@ -278,6 +278,7 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
 .rh-ex { grid-column: 2; }
 .credit { font-size: .85rem; color: var(--muted); max-width: 70ch; border-top: 1px solid var(--line); padding-top: 14px; }
 .credit a { color: var(--fg); }
+.version { margin: 0; text-align: center; font-size: .75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
 .tab { border: 0; background: none; padding: 6px 14px; border-radius: 999px; cursor: pointer; font-weight: 600; color: var(--muted); }
 .lang .tab { padding: 6px 10px; font-size: .85rem; letter-spacing: .04em; }
@@ -477,9 +478,14 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     <div id="rules-body" style="display:grid;gap:28px"></div>
   </section>
 
+  <p class="version" id="version"></p>
 </div>
 
 <script>
+/* Version shown at the bottom of every page. Raise it with every published change
+   (major.minor: minor for fixes and small changes, major for a new word pool or a big redesign). */
+const VERSION = "2.1", VERSION_DATE = "2026-10-31";
+document.getElementById("version").textContent = `ord-et ${VERSION} · ${VERSION_DATE}`;
 /* =====================================================================
    WORD LISTS  (same text format as the import box)
    ===================================================================== */
