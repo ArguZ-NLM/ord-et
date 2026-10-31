@@ -1512,7 +1512,8 @@ function endSession(early) {
   $("p-bar").style.width = "100%";
   renderResults();
   show("results");
-  if (points() === maxPoints() && maxPoints() > 0 && !early) confetti();
+  // confetti only for a full round of new words, not for practising mistakes again
+  if (points() === maxPoints() && maxPoints() > 0 && !early && session.kind.kind === "level") confetti();
 }
 // the big reward for a round with every word right; with Reduce Motion the pieces only fade in and out where they are
 function confetti() {
