@@ -1,7 +1,7 @@
 import json,sys,re
 BAD=re.compile(r'(Only used|see |Alternative|Obsolete|Archaic|Misspelling|Clipping|Abbreviation|initialism)',re.I)
 W=set(open('w/words.txt').read().split())
-lem={}; form={}; fs={}; verb=set(); formof={}
+lem={}; lempos={}; enpos={}; form={}; fs={}; verb=set(); formof={}
 for l in open('w/dl/kaikki.org-dictionary-Danish.jsonl'):
     e=json.loads(l); w=e['word']
     for f in e.get('forms',[]):
@@ -15,7 +15,7 @@ for l in open('w/dl/kaikki.org-dictionary-Danish.jsonl'):
             if w in W: formof.setdefault(w,[]).append(fo[0]['word']) if fo[0]['word'] not in formof.get(w,[]) else None
             if e.get('pos') in ('noun','adj'): fs.setdefault(fo[0]['word'],set()).add(w)
         elif s.get('glosses') and 'form-of' not in s.get('tags',[]) and not BAD.match(s['glosses'][-1]):
-            lem.setdefault(w,[]).append(s['glosses'][-1])
+            lem.setdefault(w,[]).append(s['glosses'][-1]); lempos.setdefault(w,e.get('pos')); enpos.setdefault(w,{}).setdefault(e.get('pos'),s['glosses'][-1])
 d=sum(1 for w in W if w in lem); f=sum(1 for w in W if w not in lem and form.get(w) in lem)
 print('en: direct',d,'via form',f,'of',len(W))
-json.dump({'lem':lem,'form':form,'fs':{k:sorted(v) for k,v in fs.items()},'verb':sorted(verb),'formof':formof},open('w/en.json','w'))
+json.dump({'lem':lem,'form':form,'fs':{k:sorted(v) for k,v in fs.items()},'verb':sorted(verb),'formof':formof,'lempos':lempos,'enpos':enpos},open('w/en.json','w'))

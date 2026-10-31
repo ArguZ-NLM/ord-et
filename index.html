@@ -752,7 +752,7 @@ const STR = {
     gapLabel: (a, b) => `Del mellem ${a} og ${b}`,
     missLabel: "mangler", ok: "✓ Rigtigt delt!", notOk: "✗ Ikke helt",
     marksHelp: "Rød × = en streg for meget. Stiplet streg = her mangler en deling.",
-    theMorphs: "Morfemerne", rightSplit: "Rigtig deling", meaningH: "Betydning", otherLang: "på engelsk", meaningSrc: "Fra Wiktionary",
+    theMorphs: "Morfemerne", rightSplit: "Rigtig deling", meaningH: "Betydning", otherLang: "på engelsk", meaningSrc: "Fra DanNet og Wiktionary",
     noTypes: "Der er ikke angivet morfemtyper for dette ord.",
     alsoOk: "Også godkendt: ",
     autoBadge: "Denne deling er lavet af et program.", report: "Forkert deling?",
@@ -799,7 +799,7 @@ const STR = {
     gapLabel: (a, b) => `Split between ${a} and ${b}`,
     missLabel: "missing", ok: "✓ Correctly split!", notOk: "✗ Not quite",
     marksHelp: "Red × = one line too many. Dashed line = a split is missing here.",
-    theMorphs: "The morphemes", rightSplit: "Correct split", meaningH: "Meaning", otherLang: "in Danish", meaningSrc: "From Wiktionary",
+    theMorphs: "The morphemes", rightSplit: "Correct split", meaningH: "Meaning", otherLang: "in Danish", meaningSrc: "From DanNet and Wiktionary",
     noTypes: "No morpheme types are given for this word.",
     alsoOk: "Also accepted: ",
     autoBadge: "This split was made by a program.", report: "Wrong split?",
@@ -1055,8 +1055,8 @@ const RULES = {
                   "The prefix goes in front of the root and changes the meaning. A word can have two prefixes."],
     binde: ["Når to rødder sættes sammen, kommer der nogle gange et bogstav imellem. Det betyder ikke noget i sig selv – det limer bare ordene sammen.",
             "When two roots are put together, there is sometimes a letter in between. It has no meaning of its own – it just glues the words together."],
-    pulje: ["Ordene i ordpuljen kommer fra en fri dansk stave-ordbog (Stavekontrolden, som bruges i LibreOffice) og en liste over, hvor ofte ord bruges. Et program har delt dem efter reglerne ovenfor: det kender ordets bøjninger, finder sammensatte ord, når begge dele er rigtige ord, og kender de almindelige forstavelser og afledninger. Ord der kan læses på to måder, er sorteret fra. Programmet kan stadig tage fejl – især ved låneord – så tryk <b>Forkert deling?</b>, hvis du er uenig. Ordenes betydning kommer fra den danske og engelske Wiktionary (CC BY-SA 4.0).",
-            "The words in the word pool come from a free Danish spelling dictionary (Stavekontrolden, which is used in LibreOffice) and a list of how often words are used. A program has split them using the rules above: it knows how words are inflected, finds compound words when both parts are real words, and knows the common prefixes and derivational suffixes. Words that can be read two ways have been left out. The program can still make mistakes – especially with loanwords – so press <b>Wrong split?</b> if you disagree. The meanings of the words come from the Danish and English Wiktionary (CC BY-SA 4.0)."]
+    pulje: ["Ordene i ordpuljen kommer fra en fri dansk stave-ordbog (Stavekontrolden, som bruges i LibreOffice) og en liste over, hvor ofte ord bruges. Et program har delt dem efter reglerne ovenfor: det kender ordets bøjninger, finder sammensatte ord, når begge dele er rigtige ord, og kender de almindelige forstavelser og afledninger. Ord der kan læses på to måder, er sorteret fra. Programmet kan stadig tage fejl – især ved låneord – så tryk <b>Forkert deling?</b>, hvis du er uenig. Ordenes betydning kommer fra DanNet (Det Danske Sprog- og Litteraturselskab og Center for Sprogteknologi, Københavns Universitet) og den danske og engelske Wiktionary – alle under CC BY-SA 4.0.",
+            "The words in the word pool come from a free Danish spelling dictionary (Stavekontrolden, which is used in LibreOffice) and a list of how often words are used. A program has split them using the rules above: it knows how words are inflected, finds compound words when both parts are real words, and knows the common prefixes and derivational suffixes. Words that can be read two ways have been left out. The program can still make mistakes – especially with loanwords – so press <b>Wrong split?</b> if you disagree. The meanings of the words come from DanNet (the Danish Society for Language and Literature and the Centre for Language Technology, University of Copenhagen) and the Danish and English Wiktionary – all under CC BY-SA 4.0."]
   },
   method: [
     [["Find roden", "Find the root"], ["Hvad handler ordet om? Den del er rodmorfemet. Er ordet sat sammen af flere ord, har det flere rødder.", "What is the word about? That part is the root. If the word is made of several words, it has several roots."], "sommer-blomst-er-ne RRBB"],
@@ -1495,7 +1495,7 @@ function renderFeedback() {
     (rec.reported ? `<span class="muted" style="font-size:.9rem">${t("reported")}</span>` : `<button class="btn small" id="btn-report">${t("report")}</button>`) + "</div>";
   fb.innerHTML = h; fb.hidden = false; fitMorphs();
 }
-/* what the word means, from Wiktionary (meanings.json, built from the Danish and English Wiktionary).
+/* what the word means (meanings.json, built from DanNet and the Danish and English Wiktionary; see tools/meanings).
    An inflected word shows its base form (vejen → vej); a compound without its own entry shows each part. */
 let MEANINGS = null;
 fetch("meanings.json").then(r => r.json()).then(d => { MEANINGS = d; if (cur && cur.phase === "done") renderFeedback(); renderClue(); }).catch(() => {});

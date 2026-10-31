@@ -30,6 +30,13 @@ def fits(l,w,ctx):
     # a verb reading exists, and Wiktionary's table of the noun does not list this form
     nounonly,verbalt=ctx
     return l==w or l in VERB or nounonly or not verbalt or len(FS.get(l,()))<6 or w in FS[l]
+FREQ={}
+for l in open('w/dl/da_50k.txt'):
+    p=l.split()
+    if len(p)==2: FREQ[p[0]]=int(p[1])
+def vforms(v):
+    st=v[:-1] if v.endswith('e') else v
+    return {v,v+'r',st+'er',st+'ede',st+'te',st+'et',st+'t',st,st+'ende',v+'s'}
 def pick(found,w):
     # when Wiktionary has a page for the form itself (øget: "past participle of øge"), it decides
     own=[l for l in found if l in FORMOF.get(w,())]
@@ -72,7 +79,7 @@ def parts(segs,ty):
         if not c: continue
         cs=[];i=0;ss=[]
         # rebuild segs for heuristics
-        l=lemma(c) or (lemma(c,*_split(c,segs,ty)) )
+        l=lemma(c,*_split(c,segs,ty)) or lemma(c)
         out.append((c,l))
     return out
 def _split(c,segs,ty):
