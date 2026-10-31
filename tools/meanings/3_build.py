@@ -12,7 +12,7 @@ for l in lines:
     ty=list(toks[1].upper()) if len(toks)>1 and len(toks[1])==len(segs) else None
     items.setdefault(w,(segs,ty))
 en=json.load(open('w/en.json')); da=json.load(open('w/da.json'))
-EN=en['lem']; FORM=en['form']; FS={k:set(v) for k,v in en['fs'].items()}; VERB=set(en['verb'])
+EN=en['lem']; FORM=en['form']; FS={k:set(v) for k,v in en['fs'].items()}; VERB=set(en['verb']); FORMOF=en['formof']
 FRE=re.compile(r'^(?:(?:u?bestemt|imperativ|nutid|datid|præteritum|perfektum|participium|genitiv|flertal|ental|komparativ|superlativ|intetkøn|fælleskøn|nominativ|akkusativ|infinitiv|præsens|passiv)\b.*|.*\bform\b.*) af ([a-zæøåé]+)\W*$',re.I)
 for k in list(da):
     keep=[]
@@ -30,8 +30,14 @@ def fits(l,w,ctx):
     # a verb reading exists, and Wiktionary's table of the noun does not list this form
     nounonly,verbalt=ctx
     return l==w or l in VERB or nounonly or not verbalt or len(FS.get(l,()))<6 or w in FS[l]
+def pick(found,w):
+    # when Wiktionary has a page for the form itself (øget: "past participle of øge"), it decides
+    own=[l for l in found if l in FORMOF.get(w,())]
+    return own[0] if own else found[0]
 def lemma(w,segs=None,ty=None):
-    ctx=(False,False)
+    ctx=(False,False); found=[]
+    def add(c):
+        if c and c not in found: found.append(c)
     if segs and ty and ty[-1]=='B' and len(segs)>1 and not (segs[-1]=='e' and ty[-2]!='B' and has(w)):
         s,t=list(segs),list(ty); cand=[]; verbal=False; ends=[]
         while len(s)>1 and t[-1]=='B':
@@ -44,9 +50,11 @@ def lemma(w,segs=None,ty=None):
         ctx=(any(e in NOUNONLY for e in ends) or (len(ends)>1 and ends[0]=='s'),verbalt)
         for cs in cand:
             for c in cs:
-                if c and has(c) and fits(c,w,ctx): return c
+                if c and has(c) and fits(c,w,ctx): add(c)
             for c in cs:
-                if c and FORM.get(c) and has(FORM[c]) and fits(FORM[c],w,ctx): return FORM[c]
+                if c and FORM.get(c) and has(FORM[c]) and fits(FORM[c],w,ctx): add(FORM[c])
+    if found and not ctx[0]: return pick(found,w)
+    if found: return found[0]
     if has(w): return w
     f=FORM.get(w)
     if f and has(f) and fits(f,w,ctx): return f

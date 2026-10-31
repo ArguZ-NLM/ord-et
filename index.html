@@ -175,6 +175,8 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .gap.miss::before { background: repeating-linear-gradient(to bottom, var(--miss) 0 6px, transparent 6px 11px); opacity: 1; transform: none; }
 .gap.miss::after { content: var(--miss-label, "mangler"); position: absolute; left: 50%; bottom: -1.05em; transform: translateX(-50%); font-family: var(--font-body); font-size: .2em; color: var(--miss); font-weight: 700; white-space: nowrap; }
 /* the split as text, for screen readers only */
+.clue { margin: 0; max-width: 46ch; text-align: center; font-size: .92rem; color: var(--muted); line-height: 1.4; }
+.clue .src { font-size: .78rem; }
 .preview { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .instr { display: flex; gap: 8px; flex-wrap: wrap; justify-content: space-between; align-items: baseline; }
 
@@ -424,6 +426,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     <div class="stage">
       <div class="word" id="word"></div>
       <div class="preview" id="preview" aria-live="polite"></div>
+      <p class="clue" id="clue" hidden></p>
     </div>
     <div class="row spread" id="split-actions">
       <div class="row">
@@ -1291,6 +1294,17 @@ function renderPracticeChrome() {
   renderRuleHint();
   if (cur && cur.phase !== "split") { renderFeedback(); setNextLabel(); }
   else renderWord();
+  renderClue();
+}
+/* before the check: what the word means, so a word that can be both noun and verb (øget: et øg or at øge)
+   is split the way that is meant. Only the meaning, not the base word, which would give the split away;
+   compounds get no clue, as their parts would. */
+function renderClue() {
+  const m = cur && cur.phase === "split" && MEANINGS && MEANINGS.w[cur.item.word];
+  const e = m && !Array.isArray(m) && MEANINGS.l[m === 1 ? cur.item.word : m];
+  const first = prefs.lang === "en" ? 1 : 0, txt = e && (e[first] || e[1 - first]);
+  $("clue").hidden = !txt;
+  if (txt) $("clue").innerHTML = esc(txt) + (e[first] ? "" : ` <span class="src">(${t("otherLang")})</span>`);
 }
 function loadWord() {
   const item = session.items[session.idx];
@@ -1446,6 +1460,7 @@ function checkSplit() {
   }
   cur.phase = "done";
   $("split-actions").hidden = true;
+  renderClue();
   session.results.push({ item: cur.item, userSegs: segsFromCuts(cur.item.word, cur.cuts), alt, splitOk: ok, hint: cur.hint });
   noteMistake(cur.item.word, !ok);
   renderFeedback();
@@ -1478,7 +1493,7 @@ function renderFeedback() {
 /* what the word means, from Wiktionary (meanings.json, built from the Danish and English Wiktionary).
    An inflected word shows its base form (vejen → vej); a compound without its own entry shows each part. */
 let MEANINGS = null;
-fetch("meanings.json").then(r => r.json()).then(d => { MEANINGS = d; if (cur && cur.phase === "done") renderFeedback(); }).catch(() => {});
+fetch("meanings.json").then(r => r.json()).then(d => { MEANINGS = d; if (cur && cur.phase === "done") renderFeedback(); renderClue(); }).catch(() => {});
 function meaningHTML(word) {
   const m = MEANINGS && MEANINGS.w[word]; if (!m) return "";
   const lems = Array.isArray(m) ? m : [m === 1 ? word : m];
