@@ -187,6 +187,9 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .explain { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: .93rem; }
 .explain li { display: grid; grid-template-columns: minmax(70px, auto) 1fr; gap: 10px; align-items: baseline; }
 .explain code { font-family: var(--font-mono); font-weight: 600; font-size: 1rem; }
+.meaning { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: .95rem; }
+.meaning b { font-family: var(--font-mono); }
+.meaning .src { font-size: .78rem; color: var(--muted); }
 .note { font-size: .9rem; color: var(--muted); font-style: italic; }
 .badge { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 3px 9px; background: var(--surface); }
 .auto-row { border-top: 1px solid var(--line); padding-top: 10px; }
@@ -746,7 +749,7 @@ const STR = {
     gapLabel: (a, b) => `Del mellem ${a} og ${b}`,
     missLabel: "mangler", ok: "✓ Rigtigt delt!", notOk: "✗ Ikke helt",
     marksHelp: "Rød × = en streg for meget. Stiplet streg = her mangler en deling.",
-    theMorphs: "Morfemerne", rightSplit: "Rigtig deling",
+    theMorphs: "Morfemerne", rightSplit: "Rigtig deling", meaningH: "Betydning", otherLang: "på engelsk", meaningSrc: "Fra Wiktionary",
     noTypes: "Der er ikke angivet morfemtyper for dette ord.",
     alsoOk: "Også godkendt: ",
     autoBadge: "Denne deling er lavet af et program.", report: "Forkert deling?",
@@ -793,7 +796,7 @@ const STR = {
     gapLabel: (a, b) => `Split between ${a} and ${b}`,
     missLabel: "missing", ok: "✓ Correctly split!", notOk: "✗ Not quite",
     marksHelp: "Red × = one line too many. Dashed line = a split is missing here.",
-    theMorphs: "The morphemes", rightSplit: "Correct split",
+    theMorphs: "The morphemes", rightSplit: "Correct split", meaningH: "Meaning", otherLang: "in Danish", meaningSrc: "From Wiktionary",
     noTypes: "No morpheme types are given for this word.",
     alsoOk: "Also accepted: ",
     autoBadge: "This split was made by a program.", report: "Wrong split?",
@@ -1044,8 +1047,8 @@ const RULES = {
                   "The prefix goes in front of the root and changes the meaning. A word can have two prefixes."],
     binde: ["Når to rødder sættes sammen, kommer der nogle gange et bogstav imellem. Det betyder ikke noget i sig selv – det limer bare ordene sammen.",
             "When two roots are put together, there is sometimes a letter in between. It has no meaning of its own – it just glues the words together."],
-    pulje: ["Ordene i ordpuljen kommer fra en fri dansk stave-ordbog (Stavekontrolden, som bruges i LibreOffice) og en liste over, hvor ofte ord bruges. Et program har delt dem efter reglerne ovenfor: det kender ordets bøjninger, finder sammensatte ord, når begge dele er rigtige ord, og kender de almindelige forstavelser og afledninger. Ord der kan læses på to måder, er sorteret fra. Programmet kan stadig tage fejl – især ved låneord – så tryk <b>Forkert deling?</b>, hvis du er uenig.",
-            "The words in the word pool come from a free Danish spelling dictionary (Stavekontrolden, which is used in LibreOffice) and a list of how often words are used. A program has split them using the rules above: it knows how words are inflected, finds compound words when both parts are real words, and knows the common prefixes and derivational suffixes. Words that can be read two ways have been left out. The program can still make mistakes – especially with loanwords – so press <b>Wrong split?</b> if you disagree."]
+    pulje: ["Ordene i ordpuljen kommer fra en fri dansk stave-ordbog (Stavekontrolden, som bruges i LibreOffice) og en liste over, hvor ofte ord bruges. Et program har delt dem efter reglerne ovenfor: det kender ordets bøjninger, finder sammensatte ord, når begge dele er rigtige ord, og kender de almindelige forstavelser og afledninger. Ord der kan læses på to måder, er sorteret fra. Programmet kan stadig tage fejl – især ved låneord – så tryk <b>Forkert deling?</b>, hvis du er uenig. Ordenes betydning kommer fra den danske og engelske Wiktionary (CC BY-SA 4.0).",
+            "The words in the word pool come from a free Danish spelling dictionary (Stavekontrolden, which is used in LibreOffice) and a list of how often words are used. A program has split them using the rules above: it knows how words are inflected, finds compound words when both parts are real words, and knows the common prefixes and derivational suffixes. Words that can be read two ways have been left out. The program can still make mistakes – especially with loanwords – so press <b>Wrong split?</b> if you disagree. The meanings of the words come from the Danish and English Wiktionary (CC BY-SA 4.0)."]
   },
   method: [
     [["Find roden", "Find the root"], ["Hvad handler ordet om? Den del er rodmorfemet. Er ordet sat sammen af flere ord, har det flere rødder.", "What is the word about? That part is the root. If the word is made of several words, it has several roots."], "sommer-blomst-er-ne RRBB"],
@@ -1464,12 +1467,30 @@ function renderFeedback() {
   let h = `<div class="verdict">${ok ? t("ok") : t("notOk")}</div>`;
   if (!ok) h += `<p style="font-size:.92rem">${t("marksHelp")}</p>`;
   h += `<div style="display:grid;gap:8px"><span class="label">${ok ? t("theMorphs") : t("rightSplit")}</span>${morphHTML(alt.segs, alt.types)}</div>`;
-  h += alt.types ? explainHTML(alt) : `<p class="note">${t("noTypes")}</p>`;
+  const mean = meaningHTML(cur.item.word);
+  h += mean || (alt.types ? explainHTML(alt) : `<p class="note">${t("noTypes")}</p>`);
   if (cur.item.alts.length > 1) h += `<p class="note">${t("alsoOk")}${esc(cur.item.alts.filter(a => a !== alt).map(a => a.segs.join(" | ")).join(" · "))}</p>`;
   if (cur.item.note) h += `<p class="note">${esc(noteText(cur.item.note))}</p>`;
   if (cur.item.auto) h += `<div class="row auto-row"><span class="muted" style="font-size:.88rem">${t("autoBadge")}</span>` +
     (rec.reported ? `<span class="muted" style="font-size:.9rem">${t("reported")}</span>` : `<button class="btn small" id="btn-report">${t("report")}</button>`) + "</div>";
   fb.innerHTML = h; fb.hidden = false; fitMorphs();
+}
+/* what the word means, from Wiktionary (meanings.json, built from the Danish and English Wiktionary).
+   An inflected word shows its base form (vejen → vej); a compound without its own entry shows each part. */
+let MEANINGS = null;
+fetch("meanings.json").then(r => r.json()).then(d => { MEANINGS = d; if (cur && cur.phase === "done") renderFeedback(); }).catch(() => {});
+function meaningHTML(word) {
+  const m = MEANINGS && MEANINGS.w[word]; if (!m) return "";
+  const lems = Array.isArray(m) ? m : [m === 1 ? word : m];
+  const first = prefs.lang === "en" ? 1 : 0;
+  const rows = lems.map(l => {
+    const e = MEANINGS.l[l] || ["", ""], txt = e[first] || e[1 - first]; if (!txt) return "";
+    const other = !e[first] ? ` <span class="src">(${t("otherLang")})</span>` : "";
+    const head = lems.length > 1 || l !== word ? `<b>${esc(l)}</b> – ` : "";
+    return `<li>${head}${esc(txt)}${other}</li>`;
+  }).filter(Boolean);
+  if (!rows.length) return "";
+  return `<div style="display:grid;gap:6px"><span class="label">${t("meaningH")}</span><ul class="meaning">${rows.join("")}</ul><span class="src" style="font-size:.78rem;color:var(--muted)">${t("meaningSrc")}</span></div>`;
 }
 function explainHTML(alt) {
   return '<ul class="explain">' + alt.segs.map((s, i) =>
