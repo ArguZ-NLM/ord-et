@@ -693,7 +693,7 @@ const STR = {
     gapLabel: (a, b) => `Del mellem ${a} og ${b}`,
     missLabel: "mangler", ok: "✓ Rigtigt delt!", notOk: "✗ Ikke helt",
     marksHelp: "Rød × = en streg for meget. Stiplet streg = her mangler en deling.",
-    theMorphs: "Morfemerne", rightSplit: "Rigtig deling", otherLang: "på engelsk",
+    theMorphs: "Morfemerne", rightSplit: "Rigtig deling", otherLang: "på engelsk", doubleNote: (c, base, w) => `· det ekstra ${c} er stavning (${base} → ${w}), ikke et morfem`,
     noTypes: "Der er ikke angivet morfemtyper for dette ord.",
     alsoOk: "Også godkendt: ",
     autoBadge: "Delingen er tjekket mod Dansk Sprognævns ordregister.", report: "Forkert deling?",
@@ -740,7 +740,7 @@ const STR = {
     gapLabel: (a, b) => `Split between ${a} and ${b}`,
     missLabel: "missing", ok: "✓ Correctly split!", notOk: "✗ Not quite",
     marksHelp: "Red × = one line too many. Dashed line = a split is missing here.",
-    theMorphs: "The morphemes", rightSplit: "Correct split", otherLang: "in Danish",
+    theMorphs: "The morphemes", rightSplit: "Correct split", otherLang: "in Danish", doubleNote: (c, base, w) => `· the extra ${c} is spelling (${base} → ${w}), not a morpheme`,
     noTypes: "No morpheme types are given for this word.",
     alsoOk: "Also accepted: ",
     autoBadge: "This split is checked against the Danish Language Council's word register.", report: "Wrong split?",
@@ -1069,7 +1069,8 @@ const RULES = {
     [["Roden kan skifte vokal", "The root can change its vowel"], ["Nogle ord ændrer sig, når de bøjes. Roden er stadig samme morfem.", "Some words change when they are inflected (bog → bøger). The root is still the same morpheme."], ["bøg-er-ne RBB"]],
     [["Låneord deles ikke", "Loanwords are not split"], ["Ord fra andre sprog er ét morfem, selv om de er lange.", "Words from other languages are one morpheme, even if they are long."], ["computer R"]],
     [["Pas på ord der ligner", "Watch out for look-alikes"], ["Snebold og sneaker begynder ens, men sneaker har intet med sne at gøre. Spørg: betyder delen det samme her?", "Snebold and sneaker start the same way, but sneaker has nothing to do with sne (snow). Ask: does the part mean the same thing here?"], ["sne-bold RR"]],
-    [["Nogle ord kan deles på to måder", "Some words can be split two ways"], ["Fx hundens: hund-en-s eller hund-ens. I øvelsen godkendes begge, når de er rigtige.", "E.g. hundens: hund-en-s or hund-ens. The exercise accepts both when they are correct."], ["hund-en-s RBB"]]
+    [["Nogle ord kan deles på to måder", "Some words can be split two ways"], ["Fx hundens: hund-en-s eller hund-ens. I øvelsen godkendes begge, når de er rigtige.", "E.g. hundens: hund-en-s or hund-ens. The exercise accepts both when they are correct."], ["hund-en-s RBB"]],
+    [["Dobbelt konsonant er stavning", "A doubled consonant is spelling"], ["Efter en kort vokal fordobles den sidste konsonant, når der kommer en endelse: snit → snittet, ven → venner, smuk → smukke. Det ekstra bogstav betyder ikke noget i sig selv – det er hverken et morfem eller et bindebogstav. Det hører til roden, så del snitt-et, ikke snit-t-et.", "After a short vowel the last consonant is doubled when an ending follows: snit → snittet, ven → venner, smuk → smukke. The extra letter means nothing on its own – it is neither a morpheme nor a linking letter. It belongs to the root, so split snitt-et, not snit-t-et."], ["snitt-et RB", "venn-er RB", "smukk-e RB"]]
   ]
 };
 const L2 = pair => Array.isArray(pair) ? pair[prefs.lang === "en" ? 1 : 0] : pair;
@@ -1363,6 +1364,7 @@ function ruleHintHTML(item) {
   const traps = [];
   if (a.segs.some((sg, i) => a.types[i] === "R" && /e$/.test(sg) && a.types[i + 1] === "B")) traps.push(RULES.traps[0]);
   if (a.segs.includes("er")) traps.push(RULES.traps[1]);
+  if (doubledRoots(item.word, a).size) traps.push(RULES.traps[6]);
   let h = `<div class="row spread"><span class="label">${t("ruleH")}</span>`;
   if (sections.length || traps.length) h += `<button class="btn small" id="btn-rule-open" data-sec="${sections[0] || "faelder"}">${t("ruleOpen")}</button>`;
   h += "</div>";
@@ -1438,9 +1440,26 @@ function renderFeedback() {
 /* what the word means (meanings.json, built from DanNet and the Danish and English Wiktionary; see tools/pool) */
 let MEANINGS = null;
 fetch("meanings.json").then(r => r.json()).then(d => { MEANINGS = d; renderClue(); }).catch(() => {});
+/* roots whose last consonant is doubled only by spelling before an ending (snit → snitt-et, kop → kopp-er):
+   the base word (from meanings.json) ends in the root without its last letter */
+function doubledRoots(word, a) {
+  const m = MEANINGS && MEANINGS.w[word], out = new Set();
+  if (!m || Array.isArray(m) || !a.types) return out;
+  const base = m.split("|")[0];
+  a.segs.forEach((g, i) => {
+    const c = g.slice(-1), next = a.segs[i + 1];
+    if (a.types[i] !== "R" || !next || g.length < 3 || /[aeiouyæøå]/.test(c) || g[g.length - 2] !== c || !/^[aeiouyæøå]/.test(next)) return;
+    if (base.endsWith(g.slice(0, -1)) && !base.endsWith(g)) out.add(i);
+  });
+  return out;
+}
 function explainHTML(alt) {
-  return '<ul class="explain">' + alt.segs.map((s, i) =>
-    `<li><code style="color:var(--t-${alt.types[i]})">${esc(s)}</code><span>${esc(gloss(s, alt.types[i]))}</span></li>`).join("") + "</ul>";
+  const dbl = doubledRoots(cur.item.word, alt), m = MEANINGS && MEANINGS.w[cur.item.word];
+  return '<ul class="explain">' + alt.segs.map((s, i) => {
+    let txt = gloss(s, alt.types[i]);
+    if (dbl.has(i)) txt += " " + t("doubleNote", s.slice(-1), m.split("|")[0], cur.item.word);
+    return `<li><code style="color:var(--t-${alt.types[i]})">${esc(s)}</code><span>${esc(txt)}</span></li>`;
+  }).join("") + "</ul>";
 }
 $("feedback").addEventListener("click", e => {
   if (e.target.id !== "btn-report") return;
