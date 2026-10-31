@@ -1,5 +1,5 @@
 /* ord-et offline cache. The version changes whenever index.html or meanings.json changes, so a new upload replaces the old copy. */
-const CACHE = "ord-et-17a93c90d2";
+const CACHE = "ord-et-8308308df5";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-512-maskable.png", "apple-touch-icon.png", "meanings.json"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

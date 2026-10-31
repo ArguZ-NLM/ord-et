@@ -1137,7 +1137,7 @@ $("rules-list").addEventListener("click", e => {
    ===================================================================== */
 const levelName = l => t("lvl_" + l);
 function renderStart() {
-  $("demo").innerHTML = morphHTML(["for", "saml", "ing", "s", "hus", "et"], ["F", "R", "A", "L", "R", "B"])   // all five kinds;
+  $("demo").innerHTML = morphHTML(["be", "tal", "ing", "s", "kort", "et"], ["F", "R", "A", "L", "R", "B"])   // all five kinds;
   requestAnimationFrame(fitMorphs);
   $("legend").innerHTML = TYPE_ORDER.map(k =>
     `<div class="legend-item"><i style="background:var(--t-${k})"></i><b>${TY(k).long}</b><span>${TY(k).what}</span></div>`).join("");
