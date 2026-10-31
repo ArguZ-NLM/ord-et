@@ -12,7 +12,7 @@ for l in lines:
     ty=list(toks[1].upper()) if len(toks)>1 and len(toks[1])==len(segs) else None
     items.setdefault(w,(segs,ty))
 en=json.load(open('w/en.json')); da=json.load(open('w/da.json'))
-EN=en['lem']; FORM=en['form']
+EN=en['lem']; FORM=en['form']; FS={k:set(v) for k,v in en['fs'].items()}; VERB=set(en['verb'])
 FRE=re.compile(r'^(?:(?:u?bestemt|imperativ|nutid|datid|præteritum|perfektum|participium|genitiv|flertal|ental|komparativ|superlativ|intetkøn|fælleskøn|nominativ|akkusativ|infinitiv|præsens|passiv)\b.*|.*\bform\b.*) af ([a-zæøåé]+)\W*$',re.I)
 for k in list(da):
     keep=[]
@@ -24,21 +24,32 @@ for k in list(da):
     else: del da[k]
 
 def has(w): return w in EN or w in da
+NOUNONLY={'en','ene','ne','erne','n','nes','ens','ets','enes','ernes'}
+def fits(l,w,ctx):
+    # a noun/adjective base is dropped only when the ending can be a verb ending,
+    # a verb reading exists, and Wiktionary's table of the noun does not list this form
+    nounonly,verbalt=ctx
+    return l==w or l in VERB or nounonly or not verbalt or len(FS.get(l,()))<6 or w in FS[l]
 def lemma(w,segs=None,ty=None):
+    ctx=(False,False)
     if segs and ty and ty[-1]=='B' and len(segs)>1 and not (segs[-1]=='e' and ty[-2]!='B' and has(w)):
-        s,t=list(segs),list(ty); cand=[]; verbal=False
+        s,t=list(segs),list(ty); cand=[]; verbal=False; ends=[]
         while len(s)>1 and t[-1]=='B':
-            e=s.pop();t.pop();stem=''.join(s)
-            if e in ('ede','te','ende','edes','tes','es','ed','ede'): verbal=True
+            e=s.pop();t.pop();stem=''.join(s); ends.append(e)
+            if e in ('ede','te','ende','edes','tes','es','ed'): verbal=True
             dbl=stem[:-1] if len(stem)>2 and stem[-1]==stem[-2] else None
             cand.insert(0,[stem+'e',stem,dbl] if verbal else [stem,stem+'e',dbl])
+        allc=[c for cs in cand for c in cs if c]
+        verbalt=any(c in VERB or FORM.get(c) in VERB for c in allc)
+        ctx=(any(e in NOUNONLY for e in ends) or (len(ends)>1 and ends[0]=='s'),verbalt)
         for cs in cand:
             for c in cs:
-                if c and has(c): return c
-                if c and FORM.get(c) and has(FORM[c]): return FORM[c]
+                if c and has(c) and fits(c,w,ctx): return c
+            for c in cs:
+                if c and FORM.get(c) and has(FORM[c]) and fits(FORM[c],w,ctx): return FORM[c]
     if has(w): return w
     f=FORM.get(w)
-    if f and has(f): return f
+    if f and has(f) and fits(f,w,ctx): return f
     return None
 def parts(segs,ty):
     comps=[];cur='';curty=''
