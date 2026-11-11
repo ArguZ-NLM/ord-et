@@ -29,9 +29,10 @@ the root stays the dictionary word, the extra letter is spelling), and a word CO
 accepted alternative tagged with word class and base word (`snit-t-et RDB sb=snit / snitt-et RB vb=snitte`,
 `tjen-er RB vb=tjene / tjen-er RA sb=tjener`).
 
-`7_meanings_fill.py` runs last: pool words without a Danish meaning take the hand-written one in `meanings_extra.json`,
-and every meaning is cut to one line (60 characters: first sentence, then before `;`, without `(…)`, at a comma).
 `6_readings.py` also drops a few words students read as names or English words (`signe`, `header`, `hamlet`).
 
-`4_build_pool.py` writes the pool (most common first) and removes hand-made examples that fail; `5_meanings.py` writes `meanings.json`
-(DanNet for the right word class, else Danish Wiktionary, else DanNet's text cut at the last whole word; English from Wiktionary).
+`4_build_pool.py` writes the pool (most common first) and removes hand-made examples that fail; `5_meanings.py` writes `meanings.json` (run it after `6_readings.py`), only from published sources and always for the
+word's own word class: Danish Wiktionary's first definition, else DanNet's most connected sense, else DanNet's own cut text;
+English from English Wiktionary. No Danish text → the English one is shown; no text at all → no meaning. Nothing is written
+by hand. Every meaning is cut to one line (60 characters: first sentence, then before `;`, without `(…)`, at a comma).
+Extra data: `dannet/synset-indegree.edn` from the DanNet release; `wordfreq` installed.
