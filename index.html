@@ -177,7 +177,7 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .gap.miss::before { background: repeating-linear-gradient(to bottom, var(--miss) 0 6px, transparent 6px 11px); opacity: 1; transform: none; }
 .gap.miss::after { content: var(--miss-label, "mangler"); position: absolute; left: 50%; bottom: -1.05em; transform: translateX(-50%); font-family: var(--font-body); font-size: .2em; color: var(--miss); font-weight: 700; white-space: nowrap; }
 /* the split as text, for screen readers only */
-.clue { margin: 0; max-width: 46ch; text-align: center; font-size: .92rem; color: var(--muted); line-height: 1.4; }
+.clue { margin: 0; max-width: 100%; text-align: center; text-wrap: balance; font-size: .92rem; color: var(--muted); line-height: 1.4; }
 .clue .src { font-size: .78rem; }
 .preview { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .instr { display: flex; gap: 8px; flex-wrap: wrap; justify-content: space-between; align-items: baseline; }
@@ -518,7 +518,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <script>
 /* Version shown at the bottom of every page. Raise it with every published change
    (major.minor: minor for fixes and small changes, major for a new word pool or a big redesign). */
-const VERSION = "2.8", VERSION_DATE = "2026-11-11";
+const VERSION = "2.9", VERSION_DATE = "2026-11-11";
 document.getElementById("version").textContent = `ord-et ${VERSION} · ${VERSION_DATE}`;
 /* =====================================================================
    WORD LISTS  (same text format as the import box)
