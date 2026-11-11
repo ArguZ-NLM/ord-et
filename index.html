@@ -276,9 +276,9 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
 /* START on top, "Læs ordene" (read mode: every word shown already split) under it */
 .start-btns { display: grid; grid-template-rows: 1fr auto; gap: 8px; }
 .start-btns #btn-read { justify-content: center; font-size: .9rem; padding: 8px 12px; }
-/* "7 af 1.226 ord" right after the number buttons, always on one line */
-.count-row { display: flex; align-items: center; gap: 14px; min-width: 0; }
-#start-summary { font-size: .88rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* both rows of options fill the space beside START, in equal columns */
+#count-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+#vocab-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 /* narrower screens: the word count goes under the name so the three choices stay on one line */
 @media (max-width: 900px) {
   #vocab-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
@@ -294,12 +294,9 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
   .settings { grid-template-columns: 1fr; gap: 6px; }
   .settings .choices + .label { margin-top: 8px; }
   #vocab-choices .choice { display: grid; gap: 2px; min-height: 0; }
-  #count-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; flex: 1; min-width: 0; }
-  .count-row { gap: 10px; }
+  #count-choices { gap: 5px; }
   #split-actions #btn-check { flex: 1 1 100%; }
   .start-btns { grid-template-rows: none; grid-template-columns: 2fr 1fr; }
-  /* fixed width (room for "30 af 10 fejlord"), so the number buttons never move when the text changes */
-  #start-summary { font-size: .82rem; flex: none; width: 15.5ch; text-align: right; }
   #vocab-choices .choice b { font-size: .92rem; white-space: nowrap; }
   #v-start .choice { padding: 8px 6px; text-align: center; justify-items: center; }
   #v-start .choice b { font-size: .92rem; }
@@ -396,14 +393,11 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       </div>
       <div class="settings">
         <span class="label" data-i="count">Antal ord</span>
-        <div class="count-row">
         <div class="choices" id="count-choices">
           <button class="choice compact" data-count="7" aria-pressed="false"><b>7</b></button>
           <button class="choice compact" data-count="15" aria-pressed="true"><b>15</b></button>
           <button class="choice compact" data-count="30" aria-pressed="false"><b>30</b></button>
           <button class="choice compact" data-count="0" aria-pressed="false"><b data-i="countAll">Alle</b></button>
-        </div>
-        <span class="muted" id="start-summary"></span>
         </div>
         <span class="label" data-i="which">Hvilke ord</span>
         <div class="choices" id="vocab-choices">
@@ -538,7 +532,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <script>
 /* Version shown at the bottom of every page. Raise it with every published change
    (major.minor: minor for fixes and small changes, major for a new word pool or a big redesign). */
-const VERSION = "2.12", VERSION_DATE = "2026-11-11";
+const VERSION = "2.13", VERSION_DATE = "2026-11-11";
 document.getElementById("version").textContent = `ord-et ${VERSION} · ${VERSION_DATE}`;
 /* =====================================================================
    WORD LISTS  (same text format as the import box)
@@ -733,8 +727,6 @@ const STR = {
     vocab_common: "Almindelige", vocab_all: "Alle ord", vocab_mistakes: "Mine fejlord",
     nWords: n => `${n} ord`,
     start: "START",
-    summary: (n, common, lvl, total) => `${n} af ${total} ord`,
-    summaryMis: (n, total) => `${n} af ${total} fejlord`, summaryAll: total => `alle ${total} ord`,
     credit: `Hvert ord er tjekket mod <a href="https://ordregister.dk" target="_blank" rel="noopener">Det Centrale Ordregister</a> (Dansk Sprognævn), og delingen er bekræftet af Wiktionary, DanNet eller COR.SEM. Ordene er udvalgt efter hvor almindelige de er med <a href="https://github.com/rspeer/wordfreq" target="_blank" rel="noopener">wordfreq</a>. Er du uenig i en deling, så tryk <b>Forkert deling?</b>.`,
     hist: "Dine seneste runder (kun på denne enhed)",
     reset: "Nulstil", resetQ: "Slet alle resultater?", resetYes: "Ja, slet", resetNo: "Fortryd",
@@ -786,8 +778,6 @@ const STR = {
     vocab_common: "Common", vocab_all: "All words", vocab_mistakes: "My mistakes",
     nWords: n => `${n} words`,
     start: "START",
-    summary: (n, common, lvl, total) => `${n} of ${total} words`,
-    summaryMis: (n, total) => `${n} of ${total} mistake words`, summaryAll: total => `all ${total} words`,
     credit: `Every word is checked against <a href="https://ordregister.dk" target="_blank" rel="noopener">Det Centrale Ordregister</a> (the Danish Language Council), and its split is confirmed by Wiktionary, DanNet or COR.SEM. The words are chosen by how common they are using <a href="https://github.com/rspeer/wordfreq" target="_blank" rel="noopener">wordfreq</a>. If you disagree with a split, press <b>Wrong split?</b>.`,
     hist: "Your recent rounds (this device only)",
     reset: "Reset", resetQ: "Delete all results?", resetYes: "Yes, delete", resetNo: "Cancel",
@@ -1274,9 +1264,6 @@ function updateStartSummary() {
   $("level-choices").classList.toggle("off", prefs.vocab === "mistakes");
   const pool = mixedPool();
   const n = prefs.count === 0 ? pool.length : Math.min(prefs.count, pool.length);
-  $("start-summary").textContent = n === pool.length && prefs.vocab !== "mistakes" ? t("summaryAll", fmt(n)) : prefs.vocab === "mistakes"
-    ? t("summaryMis", fmt(n), fmt(pool.length))
-    : t("summary", fmt(n), prefs.vocab === "common", levelName(prefs.level), fmt(pool.length));
   $("btn-start").disabled = n === 0;
 }
 $("level-choices").addEventListener("click", e => { const b = e.target.closest(".choice"); if (!b) return; prefs.level = b.dataset.level; if (prefs.vocab === "mistakes") prefs.vocab = "all"; savePrefs(); renderStart(); });
