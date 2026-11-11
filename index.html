@@ -259,6 +259,9 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
 /* room for the longest count ("4.373 ord"), so the buttons keep their size when the level changes */
 #vocab-choices .choice span { min-width: 5ch; text-align: left; }
 .start-top #btn-start { justify-content: center; text-align: center; }
+/* START on top, "Læs ordene" (read mode: every word shown already split) under it */
+.start-btns { display: grid; grid-template-rows: 1fr auto; gap: 8px; }
+.start-btns #btn-read { justify-content: center; font-size: .9rem; padding: 8px 12px; }
 /* "7 af 1.226 ord" right after the number buttons, always on one line */
 .count-row { display: flex; align-items: center; gap: 14px; min-width: 0; }
 #start-summary { font-size: .88rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
@@ -280,6 +283,7 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
   #count-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; flex: 1; min-width: 0; }
   .count-row { gap: 10px; }
   #split-actions #btn-check { flex: 1 1 100%; }
+  .start-btns { grid-template-rows: none; grid-template-columns: 2fr 1fr; }
   #start-summary { font-size: .82rem; }
   #vocab-choices .choice b { font-size: .92rem; white-space: nowrap; }
   #v-start .choice { padding: 8px 6px; text-align: center; justify-items: center; }
@@ -371,7 +375,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   <!-- ============ START ============ -->
   <section id="v-start" class="card start">
     <div class="start-top">
-      <button class="btn primary" id="btn-start" data-i="start">START</button>
+      <div class="start-btns">
+        <button class="btn primary" id="btn-start" data-i="start">START</button>
+        <button class="btn" id="btn-read" data-i="readBtn">Læs ordene</button>
+      </div>
       <div class="settings">
         <span class="label" data-i="count">Antal ord</span>
         <div class="count-row">
@@ -461,7 +468,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     </div>
     <div class="row spread" id="next-row" hidden>
       <button class="btn small" id="btn-quit" data-i="quit">Afslut runden</button>
-      <button class="btn primary" id="btn-next"></button>
+      <div class="row">
+        <button class="btn" id="btn-prev" data-i="prev" hidden>← Forrige</button>
+        <button class="btn primary" id="btn-next"></button>
+      </div>
     </div>
     <div id="rule-hint" class="rule-hint" hidden></div>
     <div id="feedback" hidden></div>
@@ -508,7 +518,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <script>
 /* Version shown at the bottom of every page. Raise it with every published change
    (major.minor: minor for fixes and small changes, major for a new word pool or a big redesign). */
-const VERSION = "2.7", VERSION_DATE = "2026-11-11";
+const VERSION = "2.8", VERSION_DATE = "2026-11-11";
 document.getElementById("version").textContent = `ord-et ${VERSION} · ${VERSION_DATE}`;
 /* =====================================================================
    WORD LISTS  (same text format as the import box)
@@ -714,6 +724,8 @@ const STR = {
     labelLevel: lvl => `Niveau: ${lvl}`, labelCommon: " · almindelige ord", labelMis: "Fejlord",
     wordOf: (i, n) => `Ord ${i} af ${n}`, points: p => `Point ${p}`,
     instr: "<b>Klik mellem bogstaverne</b> for at dele ordet. Klik igen for at fjerne en streg.",
+    readBtn: "Læs ordene", prev: "← Forrige", readDone: "Færdig", readInstr: "<b>Læs ordene:</b> hvert ord er vist delt i morfemer. Se hvordan det er gjort, og gå videre, når du er klar.",
+    readLabel: " · læsning",
     ruleBtn: "Regel", ruleH: "Regler der passer til ordet", ruleOpen: "Åbn i regelbogen →", ruleRoot: "Ordet er ét rodmorfem – det skal ikke deles.",
     ruleCompound: "Ordet er sat sammen af flere rødder.",
     hint: "Hint", clear: "Ryd", check: "Tjek deling", quit: "Afslut runden",
@@ -764,6 +776,8 @@ const STR = {
     labelLevel: lvl => `Level: ${lvl}`, labelCommon: " · common words", labelMis: "Mistake words",
     wordOf: (i, n) => `Word ${i} of ${n}`, points: p => `Points ${p}`,
     instr: "<b>Click between the letters</b> to split the word. Click again to remove a line.",
+    readBtn: "Read the words", prev: "← Back", readDone: "Done", readInstr: "<b>Read the words:</b> each word is shown split into morphemes. See how it is done and go on when you are ready.",
+    readLabel: " · reading",
     ruleBtn: "Rule", ruleH: "Rules that fit this word", ruleOpen: "Open in the rule book →", ruleRoot: "The word is a single root – it should not be split.",
     ruleCompound: "The word is made of several roots.",
     hint: "Hint", clear: "Clear", check: "Check split", quit: "End round",
@@ -1247,6 +1261,7 @@ $("level-choices").addEventListener("click", e => { const b = e.target.closest("
 $("vocab-choices").addEventListener("click", e => { const b = e.target.closest(".choice"); if (!b || b.disabled) return; prefs.vocab = b.dataset.vocab; savePrefs(); renderStart(); });
 $("count-choices").addEventListener("click", e => { const b = e.target.closest(".choice"); if (!b) return; prefs.count = +b.dataset.count; savePrefs(); renderStart(); });
 $("btn-start").addEventListener("click", () => startSession());
+$("btn-read").addEventListener("click", () => startSession(null, true));
 function resetBox(asking) {
   $("reset-box").innerHTML = asking
     ? `<span class="muted" style="font-size:.88rem">${t("resetQ")}</span><button class="btn small danger" id="btn-reset-yes">${t("resetYes")}</button><button class="btn small" id="btn-reset-no">${t("resetNo")}</button>`
@@ -1273,11 +1288,11 @@ function roundLabel(k) {
   return t("labelLevel", levelName(k.level)) + (k.vocab === "common" ? t("labelCommon") : "");
 }
 
-function startSession(items) {
+function startSession(items, read = false) {
   let pool = items || shuffle(mixedPool());
   if (!items && prefs.count) pool = pool.slice(0, prefs.count);
   const kind = items ? { kind: "retry" } : prefs.vocab === "mistakes" ? { kind: "mistakes" } : { kind: "level", level: prefs.level, vocab: prefs.vocab };
-  session = { items: pool, idx: 0, kind, results: [], finished: false };
+  session = { items: pool, idx: 0, kind, results: [], finished: false, read };
   show("practice");
   loadWord();
 }
@@ -1287,9 +1302,10 @@ const points = () => session.results.reduce((s, r) => s + (!r.reported && r.spli
 
 function renderPracticeChrome() {
   if (!session) return;
-  $("p-set").textContent = roundLabel(session.kind);
+  $("p-set").textContent = roundLabel(session.kind) + (session.read ? t("readLabel") : "");
   $("p-count").textContent = t("wordOf", session.idx + 1, session.items.length);
-  $("p-score").textContent = t("points", points());
+  $("p-score").textContent = session.read ? "" : t("points", points());
+  $("p-instr").innerHTML = t(session.read ? "readInstr" : "instr");
   if (cur && cur.hint) $("hint-text").textContent = hintText();
   renderRuleHint();
   if (cur && cur.phase !== "split") { renderFeedback(); setNextLabel(); }
@@ -1315,6 +1331,18 @@ function loadWord() {
   $("word").parentElement.classList.remove("win");
   $("split-actions").hidden = false;
   $("btn-hint").disabled = false;
+  $("btn-prev").hidden = !session.read;
+  if (session.read) {
+    // read mode: the word comes already split, with the explanation; nothing is scored or saved
+    const alt = item.alts[0], cuts = cutsOf(alt.segs);
+    Object.assign(cur, { cuts: new Set(cuts), phase: "done", alt, ok: true, rec: { item, reported: reported.includes(item.word) } });
+    cur.marks = {}; for (let i = 1; i < item.word.length; i++) cur.marks[i] = cuts.includes(i) ? "ok" : "";
+    $("split-actions").hidden = true; $("next-row").hidden = false;
+    $("btn-prev").disabled = session.idx === 0;
+    renderPracticeChrome();
+    $("btn-next").focus({ preventScroll: true });
+    return;
+  }
   renderPracticeChrome();
   const firstGap = $("word").querySelector(".gap");
   if (firstGap) firstGap.focus({ preventScroll: true });
@@ -1483,10 +1511,10 @@ function celebrate() {
 }
 function renderFeedback() {
   renderWord(cur.marks);
-  const { ok, alt } = cur, rec = session.results[session.results.length - 1];
+  const { ok, alt } = cur, rec = session.read ? cur.rec : session.results[session.results.length - 1];
   const fb = $("feedback");
-  fb.className = "feedback " + (ok ? "good" : "bad");
-  let h = `<div class="verdict">${ok ? t("ok") : t("notOk")}</div>`;
+  fb.className = "feedback " + (session.read ? "read" : ok ? "good" : "bad");
+  let h = session.read ? "" : `<div class="verdict">${ok ? t("ok") : t("notOk")}</div>`;
   if (!ok) h += `<p style="font-size:.92rem">${t("marksHelp")}</p>`;
   h += `<div style="display:grid;gap:8px"><span class="label">${ok ? t("theMorphs") : t("rightSplit")}</span>${morphHTML(alt.segs, alt.types)}</div>`;
   if (alt.reading) h += `<p class="reading">${esc(readingText(alt.reading))}</p>`;
@@ -1512,26 +1540,30 @@ function explainHTML(alt) {
 const readingText = r => r ? t("reading_" + r.cls, r.base) : "";
 $("feedback").addEventListener("click", e => {
   if (e.target.id !== "btn-report") return;
-  const rec = session.results[session.results.length - 1];
+  const rec = session.read ? cur.rec : session.results[session.results.length - 1];
   if (rec.reported) return;
   rec.reported = true;
-  noteMistake(rec.item.word, false);
+  if (!session.read) noteMistake(rec.item.word, false);
   if (!reported.includes(rec.item.word)) { reported.push(rec.item.word); store.set("reported", reported); }
-  repInfo[rec.item.word] = { student: rec.userSegs.join("-"), ts: Date.now() }; store.set("repInfo", repInfo);
+  if (!session.read) { repInfo[rec.item.word] = { student: rec.userSegs.join("-"), ts: Date.now() }; store.set("repInfo", repInfo); }
   renderFeedback();
-  $("p-score").textContent = t("points", points());
+  if (!session.read) $("p-score").textContent = t("points", points());
 });
-function setNextLabel() { $("btn-next").textContent = session.idx === session.items.length - 1 ? t("seeResult") : t("next"); }
+function setNextLabel() { $("btn-next").textContent = session.idx === session.items.length - 1 ? t(session.read ? "readDone" : "seeResult") : t("next"); }
 $("btn-next").addEventListener("click", () => {
   if (session.idx < session.items.length - 1) { session.idx++; loadWord(); window.scrollTo({ top: 0 }); }
   else endSession();
 });
+$("btn-prev").addEventListener("click", () => { if (session.idx > 0) { session.idx--; loadWord(); window.scrollTo({ top: 0 }); } });
 $("btn-quit").addEventListener("click", () => endSession(true));
 // quitting before the current word is checked: that word does not count; with nothing done, back to the start page
 $("btn-quit-split").addEventListener("click", () => { if (session.results.length) endSession(true); else { session.finished = true; show("start"); renderStart(); } });
 
 /* ---------- keyboard ---------- */
 document.addEventListener("keydown", e => {
+  if (!$("v-practice").hidden && session && session.read && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+    $(e.key === "ArrowRight" ? "btn-next" : "btn-prev").click(); return;
+  }
   if ($("v-practice").hidden || e.key !== "Enter") return;
   if (e.target.closest && e.target.tagName === "BUTTON" && !e.target.closest("#v-practice")) return;
   e.preventDefault();
@@ -1541,6 +1573,7 @@ document.addEventListener("keydown", e => {
 
 /* ---------- results ---------- */
 function endSession(early) {
+  if (session.read) { session.finished = true; show("start"); renderStart(); return; }   // reading has no result
   session.finished = true; session.early = !!early;
   if (early) session.items = session.items.slice(0, session.results.length);
   if (session.results.length && !session.test) {
