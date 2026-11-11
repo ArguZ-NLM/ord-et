@@ -16,6 +16,10 @@ HTML = sys.argv[1] if len(sys.argv) > 1 else 'index.html'
 VOW = set('aeiouyæøå')
 # -er nouns that are not "one who / a thing that …" made from the verb: tier (a coin), sveder (a sweater)
 NOT_AGENT = {'tier', 'sveder'}
+# words COR has as a Danish form, but which a student reads as a name or an English word (signe, header, hamlet),
+# or which are too rare to explain: left out of the pool
+DROP = set('''signe trine hamlet hamle helmer sander pepper ripper header trigger border popper batter tracker dos res bios
+solutions yankees hyper spins stede tilstede sparre mande age'''.split())
 
 forms = collections.defaultdict(list); para = collections.defaultdict(lambda: collections.defaultdict(list)); lem = {}; pos = {}
 for line in open(DL + 'cor1.5.1.0.tsv', encoding='utf-8'):
@@ -68,6 +72,7 @@ changed = 0
 for k, v in auto.items():
     out = []
     for line in v.split('\n'):
+        if ''.join(line.split(' ')[0].split('-')) in DROP: changed += 1; continue
         if ' / ' in line or 'D' in line.split(' ')[1]: out.append(line); continue   # already done
         n = rewrite(line); changed += n != line; out.append(n)
     auto[k] = '\n'.join(out)

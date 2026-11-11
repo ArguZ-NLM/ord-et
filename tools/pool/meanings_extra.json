@@ -1,0 +1,2023 @@
+{
+"_": "Short meanings written by hand for pool words that DanNet and Wiktionary do not explain (or only with a cut-off text). key = base word|word class, value = [Danish, English]; an empty English keeps the one from Wiktionary.",
+"administrativ|adj": [
+"som har med ledelse og papirarbejde at gøre",
+""
+],
+"afbrydelse|sb": [
+"det at noget bliver stoppet midt i det hele",
+""
+],
+"afbrænding|sb": [
+"det at brænde noget af",
+""
+],
+"afdød|adj": [
+"som er død for nylig",
+""
+],
+"afhentning|sb": [
+"det at hente noget et bestemt sted",
+""
+],
+"afhænge|vb": [
+"komme an på; være bestemt af noget andet",
+""
+],
+"afhøre|vb": [
+"stille spørgsmål til nogen, fx hos politiet",
+"to question, interrogate"
+],
+"afkode|vb": [
+"finde ud af hvad en kode eller et tegn betyder",
+"to decode"
+],
+"afløse|vb": [
+"tage over efter nogen; komme i stedet for",
+""
+],
+"afløser|sb": [
+"person der tager over efter en anden",
+"replacement, relief"
+],
+"afspejle|vb": [
+"vise eller gengive noget, som et spejl gør",
+"to reflect, mirror"
+],
+"afståelse|sb": [
+"det at give noget fra sig til andre",
+""
+],
+"afvej|sb": [
+"forkert vej; komme på afveje",
+"wrong path"
+],
+"afvente|vb": [
+"vente på at noget sker",
+""
+],
+"afvænning|sb": [
+"det at vænne sig af med noget, fx en vane",
+""
+],
+"agtelse|sb": [
+"respekt for nogen",
+""
+],
+"akkompagnere|vb": [
+"spille musik til, mens en anden synger eller spiller",
+"to accompany (music)"
+],
+"akustisk|adj": [
+"som har med lyd at gøre; uden strøm (om instrumenter)",
+"acoustic"
+],
+"akvarie|sb": [
+"glasbeholder med vand til fisk og planter",
+"aquarium"
+],
+"alkoholmisbrug|sb": [
+"det at drikke så meget alkohol, at det skader",
+""
+],
+"alternativ|adj": [
+"anderledes end det sædvanlige; som kan vælges i stedet",
+"alternative"
+],
+"analytisk|adj": [
+"som undersøger noget grundigt del for del",
+""
+],
+"angå|vb": [
+"handle om; have med nogen at gøre",
+""
+],
+"anstrenge|vb": [
+"bruge mange kræfter",
+""
+],
+"app|sb": [
+"lille program til mobil eller tablet",
+""
+],
+"arbejdslyst|sb": [
+"lyst til at arbejde",
+"desire to work"
+],
+"associere|vb": [
+"forbinde noget med noget andet i tankerne",
+""
+],
+"atmosfærisk|adj": [
+"som har med luften omkring jorden at gøre",
+""
+],
+"autentisk|adj": [
+"ægte; ikke efterlignet",
+""
+],
+"badning|sb": [
+"det at bade",
+""
+],
+"bagerst|adj": [
+"som er længst tilbage",
+"rearmost"
+],
+"bagning|sb": [
+"det at bage",
+""
+],
+"bedring|sb": [
+"det at få det bedre",
+""
+],
+"befinde|vb": [
+"være et bestemt sted eller i en bestemt tilstand",
+""
+],
+"befrier|sb": [
+"person der sætter nogen fri",
+""
+],
+"begive|vb": [
+"begive sig = tage af sted; ske",
+"to set out (begive sig)"
+],
+"begrunde|vb": [
+"forklare hvorfor",
+""
+],
+"behage|vb": [
+"gøre nogen glad eller tilfreds",
+""
+],
+"bekendelse|sb": [
+"det at indrømme eller fortælle noget",
+""
+],
+"belyse|vb": [
+"kaste lys på; forklare nærmere",
+""
+],
+"benægte|vb": [
+"sige at noget ikke er sandt",
+""
+],
+"benægter|sb": [
+"person der siger at noget ikke er sandt",
+"denier"
+],
+"beskikke|vb": [
+"udpege nogen til en opgave, fx en advokat",
+"to appoint"
+],
+"bestræbelse|sb": [
+"forsøg på at nå noget",
+""
+],
+"betage|vb": [
+"gøre stærkt indtryk på",
+""
+],
+"betjene|vb": [
+"hjælpe en kunde; styre en maskine",
+""
+],
+"betvivle|vb": [
+"være i tvivl om; ikke tro helt på",
+""
+],
+"bevilge|vb": [
+"give lov til eller penge til noget",
+""
+],
+"bevogtning|sb": [
+"det at holde vagt over noget",
+""
+],
+"beære|vb": [
+"vise nogen ære",
+""
+],
+"bibelsk|adj": [
+"som har med Bibelen at gøre",
+""
+],
+"bilde|vb": [
+"bilde nogen ind = få nogen til at tro noget forkert",
+""
+],
+"binær|adj": [
+"som består af to dele, fx 0 og 1",
+""
+],
+"bizar|adj": [
+"meget mærkelig",
+""
+],
+"blid|adj": [
+"mild og venlig",
+""
+],
+"bolt|sb": [
+"kraftig metalstift; lyn (tordenbolt)",
+"bolt"
+],
+"booke|vb": [
+"bestille, fx en rejse eller et bord",
+"to book"
+],
+"borg|sb": [
+"stort, befæstet hus fra gamle dage",
+"castle"
+],
+"bortse|vb": [
+"bortse fra = ikke regne med",
+"to disregard (bortse fra)"
+],
+"brand|sb": [
+"ild der brænder ukontrolleret",
+""
+],
+"brede|vb": [
+"sprede ud; gøre bredere",
+""
+],
+"brugernavn|sb": [
+"navn man logger ind med",
+""
+],
+"buddhistisk|adj": [
+"som har med buddhismen at gøre",
+"Buddhist"
+],
+"bueskytte|sb": [
+"person der skyder med bue og pil",
+""
+],
+"bur|sb": [
+"rum med tremmer til dyr",
+"cage"
+],
+"californisk|adj": [
+"fra Californien",
+"Californian"
+],
+"caribisk|adj": [
+"fra Caribien",
+""
+],
+"certificere|vb": [
+"give et bevis for at noget er i orden",
+"to certify"
+],
+"charmere|vb": [
+"vinde nogen med sin charme",
+""
+],
+"colombiansk|adj": [
+"fra Colombia",
+""
+],
+"cubansk|adj": [
+"fra Cuba",
+""
+],
+"cup|sb": [
+"turnering hvor taberen ryger ud",
+"cup (tournament)"
+],
+"dansegulv|sb": [
+"gulv hvor man danser",
+""
+],
+"dedikere|vb": [
+"tilegne; give noget til nogen",
+"to dedicate"
+],
+"defensiv|adj": [
+"forsvarende; forsigtig",
+"defensive"
+],
+"diagnosticere|vb": [
+"finde ud af hvilken sygdom nogen har",
+""
+],
+"dinosaur|sb": [
+"stort uddødt krybdyr",
+"dinosaur"
+],
+"dokumentar|sb": [
+"film eller program om virkelige begivenheder",
+"documentary"
+],
+"dominikansk|adj": [
+"fra Den Dominikanske Republik",
+""
+],
+"drastisk|adj": [
+"voldsom; meget kraftig",
+""
+],
+"drøfte|vb": [
+"tale grundigt om",
+""
+],
+"drøftelse|sb": [
+"samtale hvor man taler noget grundigt igennem",
+""
+],
+"dufte|vb": [
+"lugte godt",
+""
+],
+"dyrevelfærd|sb": [
+"at dyr har det godt",
+""
+],
+"dyste|vb": [
+"kæmpe mod hinanden i en konkurrence",
+""
+],
+"dødshjælp|sb": [
+"hjælp til at dø for en der er meget syg",
+""
+],
+"eftermæle|sb": [
+"det man huskes for efter sin død",
+""
+],
+"egenhændig|adj": [
+"som man selv har gjort",
+""
+],
+"egne|vb": [
+"egne sig = være god til noget bestemt",
+"to be suited (egne sig)"
+],
+"egoistisk|adj": [
+"som kun tænker på sig selv",
+""
+],
+"egyptisk|adj": [
+"fra Egypten",
+""
+],
+"ejerskab|sb": [
+"det at eje noget",
+""
+],
+"eksponere|vb": [
+"udsætte for; vise frem",
+""
+],
+"eksponering|sb": [
+"det at blive udsat for noget eller vist frem",
+""
+],
+"elektromagnetisk|adj": [
+"som har med elektricitet og magnetisme at gøre",
+""
+],
+"enkelt|adj": [
+"kun én; let at forstå",
+""
+],
+"erhverve|vb": [
+"skaffe sig; få fat i",
+""
+],
+"evangelie|sb": [
+"fortælling om Jesus i Det Nye Testamente",
+"gospel"
+],
+"evolution|sb": [
+"langsom udvikling af livet gennem tiden",
+""
+],
+"facilitere|vb": [
+"gøre noget lettere; lede en proces",
+"to facilitate"
+],
+"faglighed|sb": [
+"viden og dygtighed inden for et fag",
+""
+],
+"fanatisk|adj": [
+"overdrevent ivrig for en sag",
+"fanatical"
+],
+"fangst|sb": [
+"det man har fanget, fx fisk",
+""
+],
+"favn|sb": [
+"armene omkring nogen; gammelt længdemål",
+"embrace; fathom"
+],
+"fe|sb": [
+"lille eventyrvæsen med trylleevner",
+""
+],
+"fejle|vb": [
+"mislykkes; være syg",
+""
+],
+"feministisk|adj": [
+"som kæmper for kvinders rettigheder",
+""
+],
+"filippinsk|adj": [
+"fra Filippinerne",
+""
+],
+"flag|sb": [
+"stykke stof med et mønster, fx et lands",
+"flag"
+],
+"flage|sb": [
+"tyndt stykke af noget, fx sne eller havre",
+"flake"
+],
+"flirte|vb": [
+"vise at man kan lide nogen på en legende måde",
+""
+],
+"flugtforsøg|sb": [
+"forsøg på at flygte",
+"escape attempt"
+],
+"fordrive|vb": [
+"jage væk",
+""
+],
+"fordømmelse|sb": [
+"det at sige at noget er forkert eller ondt",
+""
+],
+"forelske|vb": [
+"forelske sig = blive glad for nogen",
+""
+],
+"forelskelse|sb": [
+"det at være forelsket",
+""
+],
+"forenkle|vb": [
+"gøre lettere eller mindre indviklet",
+""
+],
+"forfremme|vb": [
+"give et højere job",
+""
+],
+"forførelse|sb": [
+"det at lokke nogen",
+""
+],
+"forgå|vb": [
+"gå til grunde; ske",
+""
+],
+"forkæle|vb": [
+"give nogen alt hvad de vil have",
+""
+],
+"forkøle|vb": [
+"forkøle sig = blive snottet og syg",
+"to catch a cold"
+],
+"forstille|vb": [
+"forstille sig = lade som om",
+""
+],
+"forsørge|vb": [
+"sørge for mad og penge til nogen",
+""
+],
+"forsørgelse|sb": [
+"det at sørge for nogens mad og penge",
+""
+],
+"forsørger|sb": [
+"person der sørger for familiens penge",
+""
+],
+"fortegn|sb": [
+"plus eller minus foran et tal",
+"sign (plus or minus)"
+],
+"fortjene|vb": [
+"have ret til noget på grund af det man har gjort",
+"to deserve"
+],
+"fortrylle|vb": [
+"tryllebinde; gøre stærkt indtryk på",
+""
+],
+"fortrænge|vb": [
+"skubbe væk; ikke ville tænke på",
+"to push aside, repress"
+],
+"forvandle|vb": [
+"ændre helt til noget andet",
+""
+],
+"forveksle|vb": [
+"tage den ene for den anden",
+""
+],
+"forveksling|sb": [
+"det at tage den ene for den anden",
+""
+],
+"forvolde|vb": [
+"være skyld i noget dårligt",
+""
+],
+"forvrænge|vb": [
+"gøre skæv eller uklar",
+""
+],
+"fraråde|vb": [
+"råde nogen til ikke at gøre noget",
+""
+],
+"fremgå|vb": [
+"kunne ses eller forstås af noget",
+""
+],
+"fremkomst|sb": [
+"det at noget opstår eller kommer frem",
+"emergence"
+],
+"fremmøde|vb": [
+"møde op et sted",
+"to turn up, attend"
+],
+"fremstå|vb": [
+"virke; se ud som",
+""
+],
+"frigørelse|sb": [
+"det at blive fri",
+""
+],
+"friste|vb": [
+"lokke; give lyst til",
+""
+],
+"fritage|vb": [
+"slippe nogen for en pligt",
+""
+],
+"fyring|sb": [
+"det at blive smidt ud af sit job",
+""
+],
+"fysiologisk|adj": [
+"som har med kroppens funktioner at gøre",
+""
+],
+"føje|vb": [
+"sætte til; gøre som nogen vil",
+""
+],
+"gamble|vb": [
+"spille om penge; tage en chance",
+"to gamble"
+],
+"gavne|vb": [
+"være til nytte for",
+""
+],
+"gejstlig|adj": [
+"som har med kirken og præster at gøre",
+""
+],
+"generobre|vb": [
+"vinde tilbage",
+""
+],
+"genføde|vb": [
+"føde igen; give nyt liv",
+""
+],
+"gengældelse|sb": [
+"det at betale tilbage for noget ondt",
+""
+],
+"genkendelse|sb": [
+"det at kende noget igen",
+""
+],
+"genopbygge|vb": [
+"bygge op igen",
+""
+],
+"genoprette|vb": [
+"sætte i stand igen",
+""
+],
+"genoptage|vb": [
+"begynde på igen efter en pause",
+"to resume"
+],
+"genoverveje|vb": [
+"tænke over igen",
+"to reconsider"
+],
+"genvalg|sb": [
+"det at blive valgt igen",
+""
+],
+"genvinde|vb": [
+"få tilbage",
+"to regain"
+],
+"gide|vb": [
+"have lyst til; orke",
+""
+],
+"grundlægge|vb": [
+"starte; lægge grunden til",
+""
+],
+"grundlæggelse|sb": [
+"det at noget bliver startet",
+""
+],
+"gymnasie|sb": [
+"skole efter folkeskolen, som giver studentereksamen",
+"upper secondary school"
+],
+"hacke|vb": [
+"bryde ind i en computer",
+""
+],
+"hade|vb": [
+"ikke kunne fordrage",
+""
+],
+"hallucination|sb": [
+"noget man ser eller hører, som ikke er der",
+"hallucination"
+],
+"halvanden|sb": [
+"én og en halv",
+"one and a half"
+],
+"handicappet|adj": [
+"som har et handicap",
+"disabled"
+],
+"heppe|vb": [
+"råbe for at støtte nogen",
+"to cheer on"
+],
+"heroisk|adj": [
+"modig som en helt",
+""
+],
+"hjemlig|adj": [
+"som hører til hjemmet; hyggelig",
+""
+],
+"hjernerystelse|sb": [
+"skade på hjernen efter et slag mod hovedet",
+""
+],
+"hjerteløs|adj": [
+"uden medfølelse",
+""
+],
+"hjerteslag|sb": [
+"ét slag af hjertet; pludselig hjertestop",
+""
+],
+"hollandsk|adj": [
+"fra Holland",
+""
+],
+"huse|vb": [
+"give plads eller husly til",
+""
+],
+"husere|vb": [
+"holde til; lave ballade",
+"to haunt, run riot"
+],
+"hydraulisk|adj": [
+"som drives af væske under tryk",
+""
+],
+"hyre|vb": [
+"ansætte, især på et skib",
+""
+],
+"håne|vb": [
+"gøre grin med på en ond måde",
+""
+],
+"hængning|sb": [
+"det at hænge nogen",
+""
+],
+"ideel|adj": [
+"helt som det bør være",
+""
+],
+"igangsætte|vb": [
+"sætte i gang",
+"to start, launch"
+],
+"ikonisk|adj": [
+"meget kendt og typisk",
+""
+],
+"imperie|sb": [
+"stort rige med mange lande",
+"empire"
+],
+"implementering|sb": [
+"det at sætte noget i værk",
+""
+],
+"imødekomme|vb": [
+"gå med til; opfylde et ønske",
+""
+],
+"indbetale|vb": [
+"betale penge ind",
+"to pay in"
+],
+"indblande|vb": [
+"blande ind i noget",
+""
+],
+"indebære|vb": [
+"have med sig; betyde",
+""
+],
+"indenlandsk|adj": [
+"inden for landets grænser",
+""
+],
+"indgive|vb": [
+"sende ind, fx en klage",
+"to submit, file"
+],
+"indikation|sb": [
+"tegn på noget",
+""
+],
+"indlejre|vb": [
+"lægge ind i noget andet",
+"to embed"
+],
+"indrette|vb": [
+"sætte møbler og ting på plads",
+""
+],
+"indvi|vb": [
+"åbne højtideligt; fortælle en hemmelighed",
+"to inaugurate; to let in on"
+],
+"indvirkning|sb": [
+"virkning på noget",
+""
+],
+"infektion|sb": [
+"sygdom fra bakterier eller virus",
+""
+],
+"infrarød|adj": [
+"om lys der ikke kan ses, lige under rødt",
+""
+],
+"inspiration|sb": [
+"noget der giver lyst og ideer",
+""
+],
+"instruere|vb": [
+"forklare hvordan; lede en film",
+""
+],
+"interagere|vb": [
+"påvirke hinanden; være i kontakt",
+"to interact"
+],
+"interaktion|sb": [
+"det at påvirke hinanden",
+""
+],
+"interviewe|vb": [
+"stille spørgsmål til nogen",
+"to interview"
+],
+"invasiv|adj": [
+"som trænger ind og breder sig",
+"invasive"
+],
+"involvere|vb": [
+"tage med i noget; omfatte",
+""
+],
+"irakisk|adj": [
+"fra Irak",
+""
+],
+"iværksætte|vb": [
+"sætte i gang",
+""
+],
+"iværksætter|sb": [
+"person der starter sin egen virksomhed",
+""
+],
+"jævnføre|vb": [
+"sammenligne med",
+""
+],
+"kapitalistisk|adj": [
+"som bygger på at private ejer virksomhederne",
+"capitalist"
+],
+"kapre|vb": [
+"tage magten over et fly eller skib med vold",
+"to hijack"
+],
+"kede|vb": [
+"kede sig = have det kedeligt",
+""
+],
+"keramisk|adj": [
+"lavet af brændt ler",
+""
+],
+"kikse|vb": [
+"lave en fejl; misse",
+""
+],
+"kirurgisk|adj": [
+"som har med operationer at gøre",
+""
+],
+"klassificere|vb": [
+"dele op i grupper",
+""
+],
+"klassificering|sb": [
+"opdeling i grupper",
+""
+],
+"klatring|sb": [
+"det at klatre",
+""
+],
+"klæbe|vb": [
+"sidde fast som lim",
+"to stick"
+],
+"kognitiv|adj": [
+"som har med tænkning at gøre",
+"cognitive"
+],
+"kollapse|vb": [
+"falde sammen",
+""
+],
+"kollegie|sb": [
+"bygning hvor studerende bor",
+"hall of residence"
+],
+"kommunistisk|adj": [
+"som har med kommunismen at gøre",
+""
+],
+"kompensere|vb": [
+"gøre godt igen; erstatte",
+""
+],
+"kompleks|adj": [
+"indviklet; består af mange dele",
+""
+],
+"konfiskere|vb": [
+"tage fra nogen, fx af politiet",
+""
+],
+"konkurrere|vb": [
+"kæmpe om at være bedst",
+"to compete"
+],
+"konstituere|vb": [
+"danne; udgøre; vælge til en post",
+""
+],
+"konvertering|sb": [
+"det at skifte til noget andet",
+""
+],
+"kranie|sb": [
+"knoglerne i hovedet",
+"skull"
+],
+"kreditor|sb": [
+"person man skylder penge",
+""
+],
+"krigsforbrydelse|sb": [
+"grov forbrydelse begået i krig",
+""
+],
+"kriterie|sb": [
+"krav noget bliver bedømt efter",
+"criterion"
+],
+"kroatisk|adj": [
+"fra Kroatien",
+""
+],
+"kræftpatient|sb": [
+"person der er syg af kræft",
+""
+],
+"kulmination|sb": [
+"højdepunkt",
+""
+],
+"kunstnernavn|sb": [
+"navn en kunstner optræder under",
+""
+],
+"kup|sb": [
+"pludselig magtovertagelse; god handel",
+"coup; bargain"
+],
+"kvæg|sb": [
+"køer og tyre",
+"cattle"
+],
+"kåring|sb": [
+"det at blive udnævnt som vinder",
+""
+],
+"lancere|vb": [
+"sende på markedet; præsentere",
+"to launch"
+],
+"leverance|sb": [
+"levering af varer",
+"delivery"
+],
+"libanesisk|adj": [
+"fra Libanon",
+""
+],
+"ligestille|vb": [
+"give samme rettigheder",
+""
+],
+"ligestilling|sb": [
+"at alle har samme rettigheder",
+""
+],
+"like|vb": [
+"synes godt om, fx på sociale medier",
+""
+],
+"linke|vb": [
+"lave en forbindelse til en side på nettet",
+"to link"
+],
+"livslang|adj": [
+"som varer hele livet",
+""
+],
+"lovovertrædelse|sb": [
+"handling der er imod loven",
+""
+],
+"læne|vb": [
+"støtte sig op ad noget",
+""
+],
+"læselyst|sb": [
+"lyst til at læse",
+""
+],
+"magte|vb": [
+"kunne klare",
+""
+],
+"medfølge|vb": [
+"følge med",
+"to accompany, be included"
+],
+"medgang|sb": [
+"når det går godt",
+""
+],
+"medregne|vb": [
+"regne med",
+""
+],
+"mellemnavn|sb": [
+"navn mellem fornavn og efternavn",
+""
+],
+"mexicansk|adj": [
+"fra Mexico",
+""
+],
+"militant|adj": [
+"klar til at kæmpe, også med vold",
+"militant"
+],
+"mineralsk|adj": [
+"som består af mineraler",
+""
+],
+"ministerie|sb": [
+"kontor der hjælper en minister",
+"ministry"
+],
+"mishandle|vb": [
+"behandle meget dårligt",
+""
+],
+"misse|vb": [
+"ikke ramme; gå glip af",
+""
+],
+"mistro|vb": [
+"ikke stole på",
+""
+],
+"mistænke|vb": [
+"tro at nogen har gjort noget forkert",
+""
+],
+"modstrid|sb": [
+"når to ting ikke passer sammen",
+""
+],
+"modstykke|sb": [
+"det der svarer til noget andet",
+"counterpart"
+],
+"munde|vb": [
+"løbe ud i; ende med",
+""
+],
+"mysterie|sb": [
+"noget gådefuldt man ikke kan forklare",
+"mystery"
+],
+"mægler|sb": [
+"person der sælger huse for andre",
+"estate agent; mediator"
+],
+"mægling|sb": [
+"hjælp til at to parter bliver enige",
+""
+],
+"mærkbar|adj": [
+"som kan mærkes",
+""
+],
+"mætte|vb": [
+"gøre mæt",
+"to satisfy, saturate"
+],
+"nationalistisk|adj": [
+"som sætter sit eget land over alt",
+"nationalist"
+],
+"natlig|adj": [
+"som sker om natten",
+""
+],
+"nedstamme|vb": [
+"komme fra; være efterkommer af",
+""
+],
+"nominel|adj": [
+"som kun gælder i navnet",
+"nominal"
+],
+"nominere|vb": [
+"foreslå som kandidat til en pris",
+""
+],
+"nuancere|vb": [
+"gøre mere fin og detaljeret",
+"to nuance"
+],
+"nærme|vb": [
+"nærme sig = komme tættere på",
+""
+],
+"næstsidst|adj": [
+"som kommer lige før den sidste",
+"penultimate"
+],
+"nævneværdig|adj": [
+"som er værd at nævne",
+""
+],
+"nørdet|adj": [
+"meget optaget af et særligt emne",
+"nerdy"
+],
+"offentliggørelse|sb": [
+"det at gøre noget kendt for alle",
+""
+],
+"olympisk|adj": [
+"som har med De Olympiske Lege at gøre",
+""
+],
+"omdanne|vb": [
+"lave om til noget andet",
+"to transform"
+],
+"omfordeling|sb": [
+"det at fordele på en ny måde",
+""
+],
+"omhandle|vb": [
+"handle om",
+""
+],
+"omskæring|sb": [
+"det at fjerne forhuden",
+""
+],
+"omtanke|sb": [
+"det at tænke på andre",
+""
+],
+"opbruge|vb": [
+"bruge det hele",
+"to use up"
+],
+"opdigte|vb": [
+"finde på; lyve",
+""
+],
+"operativ|adj": [
+"som er i brug og virker",
+"operational"
+],
+"opholde|vb": [
+"opholde sig = være et sted",
+"to stay"
+],
+"opkalde|vb": [
+"give navn efter nogen",
+"to name after"
+],
+"opkræve|vb": [
+"kræve penge ind",
+"to collect (money)"
+],
+"opladning|sb": [
+"det at lade et batteri op",
+""
+],
+"opmuntring|sb": [
+"noget der gør glad og giver mod",
+""
+],
+"oppuste|vb": [
+"fylde med luft",
+"to inflate"
+],
+"opspore|vb": [
+"finde frem til",
+""
+],
+"opsyn|sb": [
+"det at holde øje med",
+""
+],
+"optimal|adj": [
+"den bedst mulige",
+"optimal"
+],
+"ordspil|sb": [
+"sjov leg med ords betydning",
+""
+],
+"organisatorisk|adj": [
+"som har med organisering at gøre",
+"organizational"
+],
+"orientalsk|adj": [
+"fra Østen",
+"oriental"
+],
+"overdragelse|sb": [
+"det at give noget videre til en anden",
+""
+],
+"overdrive|vb": [
+"gøre for meget af det",
+""
+],
+"overgive|vb": [
+"give fra sig; give op",
+""
+],
+"overhale|vb": [
+"køre forbi",
+""
+],
+"overkomme|vb": [
+"kunne nå eller klare",
+""
+],
+"overskride|vb": [
+"gå over en grænse",
+""
+],
+"overstige|vb": [
+"være mere end",
+""
+],
+"overstå|vb": [
+"komme igennem; blive færdig med",
+""
+],
+"oversvømme|vb": [
+"dække med vand",
+"to flood"
+],
+"oversøisk|adj": [
+"på den anden side af havet",
+"overseas"
+],
+"overvære|vb": [
+"være til stede ved",
+""
+],
+"pakistansk|adj": [
+"fra Pakistan",
+""
+],
+"palæstinensisk|adj": [
+"fra Palæstina",
+""
+],
+"panel|sb": [
+"gruppe af eksperter; plade på en væg",
+"panel"
+],
+"paralympisk|adj": [
+"som har med De Paralympiske Lege at gøre",
+"Paralympic"
+],
+"partnerskab|sb": [
+"samarbejde mellem to eller flere",
+""
+],
+"pioner|sb": [
+"person der er den første til noget",
+"pioneer"
+],
+"plot|sb": [
+"handlingen i en historie",
+"plot"
+],
+"podie|sb": [
+"lille scene man står på",
+"podium"
+],
+"preussisk|adj": [
+"fra Preussen",
+"Prussian"
+],
+"privilegie|sb": [
+"fordel som kun nogle har",
+"privilege"
+],
+"problematisk|adj": [
+"som giver problemer",
+""
+],
+"pryde|vb": [
+"gøre smuk; pynte",
+"to adorn"
+],
+"prærie|sb": [
+"stor græsslette i Nordamerika",
+""
+],
+"præsentation|sb": [
+"det at vise eller fortælle om noget",
+""
+],
+"psykotisk|adj": [
+"som har mistet kontakten med virkeligheden",
+""
+],
+"påbud|sb": [
+"ordre om at gøre noget",
+""
+],
+"påpege|vb": [
+"gøre opmærksom på",
+""
+],
+"påtage|vb": [
+"påtage sig = tage på sig, fx en opgave",
+""
+],
+"påtænke|vb": [
+"have planer om",
+""
+],
+"påvirkning|sb": [
+"det at påvirke",
+""
+],
+"pædofil|adj": [
+"som har seksuel interesse for børn",
+""
+],
+"racistisk|adj": [
+"som behandler folk dårligt på grund af deres oprindelse",
+""
+],
+"realisere|vb": [
+"gøre til virkelighed",
+""
+],
+"referere|vb": [
+"henvise til; fortælle hvad der skete",
+""
+],
+"regionsrådet|sb": [
+"de valgte politikere der styrer en region",
+"the regional council"
+],
+"respektløs|adj": [
+"uden respekt",
+""
+],
+"ressource|sb": [
+"noget man kan bruge, fx penge, tid eller råstoffer",
+""
+],
+"restriktion|sb": [
+"begrænsning; regel om hvad man ikke må",
+""
+],
+"retssikkerhed|sb": [
+"at alle bliver behandlet retfærdigt efter loven",
+""
+],
+"rituel|adj": [
+"som hører til et ritual",
+"ritual"
+],
+"romersk|adj": [
+"fra Rom",
+""
+],
+"ro|vb": [
+"bevæge en båd frem med årer",
+""
+],
+"rumænsk|adj": [
+"fra Rumænien",
+""
+],
+"rådighed|sb": [
+"til rådighed = klar til brug",
+""
+],
+"sammenligning|sb": [
+"det at se på ligheder og forskelle",
+""
+],
+"samspil|sb": [
+"det at spille eller virke godt sammen",
+""
+],
+"satsning|sb": [
+"stor indsats på noget man håber lykkes",
+""
+],
+"schweizisk|adj": [
+"fra Schweiz",
+""
+],
+"selvforståelse|sb": [
+"måden man ser sig selv på",
+""
+],
+"selvværd|sb": [
+"følelsen af at være god nok",
+""
+],
+"skamme|vb": [
+"skamme sig = føle skam",
+""
+],
+"skandinavisk|adj": [
+"fra Skandinavien",
+""
+],
+"skanse|sb": [
+"vold eller grav til forsvar i krig",
+""
+],
+"skjold|sb": [
+"plade man forsvarer sig med",
+"shield"
+],
+"skrifttype|sb": [
+"bestemt udseende på bogstaverne",
+"typeface, font"
+],
+"skumfidus|sb": [
+"blødt, sødt slik",
+""
+],
+"skynde|vb": [
+"skynde sig = gøre noget hurtigt",
+""
+],
+"skøn|adj": [
+"smuk; dejlig",
+""
+],
+"små|adj": [
+"ikke store",
+""
+],
+"smugle|vb": [
+"bringe ulovligt over en grænse",
+"to smuggle"
+],
+"snegl|sb": [
+"langsomt dyr, ofte med hus på ryggen",
+"snail, slug"
+],
+"snige|vb": [
+"snige sig = gå stille, så ingen opdager det",
+""
+],
+"snuse|vb": [
+"lugte efter; undersøge i smug",
+"to sniff; to snoop"
+],
+"sommerlejr|sb": [
+"lejr man tager på om sommeren",
+""
+],
+"specialisere|vb": [
+"blive ekspert i et bestemt område",
+""
+],
+"specialisering|sb": [
+"det at blive ekspert i et bestemt område",
+""
+],
+"specificere|vb": [
+"sige mere præcist",
+""
+],
+"spirituel|adj": [
+"åndelig; vittig",
+""
+],
+"spotte|vb": [
+"få øje på; håne",
+""
+],
+"stand|sb": [
+"tilstand; bod på en messe",
+"state; stand (at a fair)"
+],
+"stavning|sb": [
+"måden ord skrives på",
+""
+],
+"stege|vb": [
+"lave mad på en pande eller i ovnen",
+""
+],
+"stole|vb": [
+"have tillid til",
+"to trust"
+],
+"streame|vb": [
+"se eller høre direkte over nettet",
+"to stream"
+],
+"stride|vb": [
+"kæmpe; være imod",
+""
+],
+"stridighed|sb": [
+"uenighed; konflikt",
+""
+],
+"stump|sb": [
+"lille stykke",
+"stub, scrap"
+],
+"styrkelse|sb": [
+"det at gøre stærkere",
+""
+],
+"størstedel|sb": [
+"den største del",
+"the greater part"
+],
+"sublim|adj": [
+"helt fantastisk",
+""
+],
+"sund|sb": [
+"smalt stykke hav mellem to lande",
+"sound, strait"
+],
+"suspendere|vb": [
+"sætte midlertidigt ud af kraft",
+""
+],
+"svækkelse|sb": [
+"det at blive svagere",
+""
+],
+"syntetisk|adj": [
+"kunstigt fremstillet",
+""
+],
+"sårbar|adj": [
+"som let bliver såret eller skadet",
+""
+],
+"sær|adj": [
+"underlig",
+""
+],
+"sæsonkort|sb": [
+"billet der gælder en hel sæson",
+""
+],
+"tackle|vb": [
+"tage bolden fra en modspiller; klare en udfordring",
+"to tackle"
+],
+"teologisk|adj": [
+"som har med læren om Gud at gøre",
+""
+],
+"teoretisk|adj": [
+"som bygger på teori, ikke praksis",
+""
+],
+"territorie|sb": [
+"område som nogen ejer eller forsvarer",
+"territory"
+],
+"thailandsk|adj": [
+"fra Thailand",
+""
+],
+"tibetansk|adj": [
+"fra Tibet",
+""
+],
+"tilbageslag|sb": [
+"når noget går den forkerte vej",
+""
+],
+"tilgå|vb": [
+"få adgang til; gå til",
+""
+],
+"tilkoble|vb": [
+"forbinde; slutte til",
+"to connect"
+],
+"tilkomme|vb": [
+"tilhøre; være nogens ret",
+"to be due to"
+],
+"tilmelde|vb": [
+"skrive sig op til noget",
+"to sign up"
+],
+"tilsidesætte|vb": [
+"se bort fra; ikke tage hensyn til",
+""
+],
+"tilskynde|vb": [
+"opfordre; få til at gøre",
+""
+],
+"tilsætte|vb": [
+"komme i; blande i",
+""
+],
+"tiltro|sb": [
+"tillid",
+"confidence, trust"
+],
+"tiltrænge|vb": [
+"have brug for",
+"to need"
+],
+"tolerere|vb": [
+"finde sig i; acceptere",
+""
+],
+"topløs|adj": [
+"uden noget på overkroppen",
+""
+],
+"trafiksikkerheden|sb": [
+"hvor sikkert det er at færdes i trafikken",
+"road safety"
+],
+"trolddom|sb": [
+"magi; hekseri",
+""
+],
+"træning|sb": [
+"det at øve sig for at blive bedre",
+""
+],
+"træningskamp|sb": [
+"kamp man spiller for at øve sig",
+"practice match"
+],
+"træningskampe|sb": [
+"kampe man spiller for at øve sig",
+"practice matches"
+],
+"turistattraktion|sb": [
+"sted som mange turister vil se",
+"tourist attraction"
+],
+"turistattraktioner|sb": [
+"steder som mange turister vil se",
+"tourist attractions"
+],
+"tyrk|sb": [
+"person fra Tyrkiet",
+"Turk"
+],
+"tyrkisk|adj": [
+"fra Tyrkiet",
+""
+],
+"tålmodighed|sb": [
+"evnen til at vente roligt",
+""
+],
+"tælling|sb": [
+"det at tælle",
+""
+],
+"tænkning|sb": [
+"det at tænke; måde at tænke på",
+""
+],
+"udelukkelse|sb": [
+"det at blive holdt uden for",
+""
+],
+"udforskning|sb": [
+"det at undersøge noget ukendt",
+""
+],
+"udførelse|sb": [
+"det at gøre noget færdigt",
+""
+],
+"udholde|vb": [
+"klare noget svært",
+""
+],
+"udkomme|vb": [
+"blive udgivet",
+""
+],
+"udkæmpe|vb": [
+"kæmpe til ende",
+"to fight (out)"
+],
+"udlejning|sb": [
+"det at leje noget ud",
+""
+],
+"udleve|vb": [
+"gøre en drøm til virkelighed",
+""
+],
+"udløbsdato|sb": [
+"dag hvor noget ikke længere gælder eller holder",
+""
+],
+"udmatte|vb": [
+"gøre meget træt",
+""
+],
+"udmattelse|sb": [
+"det at være meget træt",
+""
+],
+"udmelding|sb": [
+"klar besked; det at melde sig ud",
+""
+],
+"udmærke|vb": [
+"udmærke sig = være særlig god",
+""
+],
+"udrette|vb": [
+"få gjort",
+""
+],
+"udryddelse|sb": [
+"det at noget forsvinder helt",
+""
+],
+"udslette|vb": [
+"ødelægge fuldstændigt",
+""
+],
+"udstede|vb": [
+"give officielt, fx et pas",
+""
+],
+"uenig|adj": [
+"som ikke mener det samme",
+""
+],
+"uinteressant|adj": [
+"kedelig",
+"uninteresting"
+],
+"ukrainsk|adj": [
+"fra Ukraine",
+""
+],
+"ukritisk|adj": [
+"som tror på noget uden at tænke over det",
+"uncritical"
+],
+"ultimativ|adj": [
+"den allerbedste; den sidste",
+"ultimate"
+],
+"ulæst|adj": [
+"som ingen har læst",
+""
+],
+"umådelig|adj": [
+"meget stor",
+""
+],
+"underdirektør|sb": [
+"leder lige under direktøren",
+"deputy director"
+],
+"underforstå|vb": [
+"mene uden at sige det",
+"to imply"
+],
+"underkastelse|sb": [
+"det at give sig under en andens magt",
+""
+],
+"undertrykkelse|sb": [
+"det at holde nogen nede med magt",
+""
+],
+"undervurdere|vb": [
+"tro at noget er mindre eller dårligere end det er",
+""
+],
+"unik|adj": [
+"den eneste af sin slags",
+""
+],
+"universitetshospital|sb": [
+"hospital hvor man også forsker og uddanner læger",
+"university hospital"
+],
+"urørt|adj": [
+"som ingen har rørt",
+""
+],
+"utroskab|sb": [
+"det at være kæreste med en anden i hemmelighed",
+""
+],
+"utæt|adj": [
+"som lader vand eller luft slippe ud",
+""
+],
+"uvenskab|sb": [
+"det at være uvenner",
+""
+],
+"vaccinere|vb": [
+"give en vaccine",
+"to vaccinate"
+],
+"vandoverfladen|sb": [
+"det øverste lag af vandet",
+"the water surface"
+],
+"variere|vb": [
+"skifte; være forskellig",
+""
+],
+"varsom|adj": [
+"forsigtig",
+""
+],
+"vaskerum|sb": [
+"rum med vaskemaskine",
+"laundry room"
+],
+"vedrøre|vb": [
+"handle om; angå",
+""
+],
+"vedvare|vb": [
+"fortsætte",
+""
+],
+"verdensberømt|adj": [
+"kendt over hele verden",
+""
+],
+"verdenskendt|adj": [
+"kendt over hele verden",
+""
+],
+"verdensrekord|sb": [
+"det bedste resultat i hele verden",
+""
+],
+"ve|sb": [
+"smerte; veer = smerter når et barn bliver født",
+""
+],
+"vidne|vb": [
+"fortælle hvad man har set, fx i retten",
+""
+],
+"vietnamesisk|adj": [
+"fra Vietnam",
+""
+],
+"virtuel|adj": [
+"som kun findes på computeren",
+""
+],
+"vished|sb": [
+"det at vide noget sikkert",
+""
+],
+"visning|sb": [
+"det at vise noget, fx en film eller et hus",
+""
+],
+"visuel|adj": [
+"som har med synet at gøre",
+""
+],
+"volde|vb": [
+"være skyld i, fx problemer",
+""
+],
+"væbne|vb": [
+"give våben",
+""
+],
+"væbner|sb": [
+"ung mand der hjalp en ridder",
+"squire"
+],
+"vædde|vb": [
+"satse noget på at man har ret",
+""
+],
+"vænne|vb": [
+"få til at blive vant til",
+""
+],
+"yndig|adj": [
+"sød og smuk",
+""
+],
+"ypperst|adj": [
+"den allerbedste",
+""
+],
+"øjemed|sb": [
+"formål",
+""
+],
+"nørd|sb": [
+"person der er meget optaget af et særligt emne",
+"nerd"
+],
+"bar|sb": [
+"sted hvor man kan købe drinks",
+"bar"
+],
+"stol|sb": [
+"møbel man sidder på",
+"chair"
+],
+"sted|sb": [
+"bestemt plads eller område",
+"place"
+],
+"mæt|adj": [
+"som ikke er sulten mere",
+"full (after eating)"
+],
+"flade|sb": [
+"glat og jævn overflade",
+"surface, plane"
+],
+"kort|sb": [
+"stykke pap eller plast; tegning af et område",
+"card; map"
+],
+"vidne|sb": [
+"person der har set noget ske",
+"witness"
+],
+"skrift|sb": [
+"bogstaver og tegn man skriver med",
+"writing, script"
+],
+"had|sb": [
+"stærk følelse af at ikke kunne fordrage nogen",
+"hatred"
+],
+"steg|sb": [
+"stort stykke kød stegt i ovnen",
+"roast"
+],
+"vove|sb": [
+"bølge (gammelt ord)",
+"wave"
+],
+"tov|sb": [
+"kraftigt, tykt reb",
+"rope"
+],
+"reb|sb": [
+"kraftig snor",
+"rope"
+],
+"kalv|sb": [
+"ungen hos køer",
+"calf"
+],
+"snavset|adj": [
+"ikke ren; beskidt",
+"dirty"
+],
+"udvej|sb": [
+"måde at komme ud af et problem på",
+"way out"
+],
+"liv|sb": [
+"tiden fra man bliver født, til man dør",
+"life"
+],
+"stund|sb": [
+"kort stykke tid",
+"while, moment"
+],
+"vrag|sb": [
+"skib, bil eller fly der er ødelagt",
+"wreck"
+],
+"slap|adj": [
+"ikke stram; uden energi",
+"slack, limp"
+],
+"vove|vb": [
+"turde; sætte noget på spil",
+"to dare, risk"
+]
+}
