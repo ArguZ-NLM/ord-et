@@ -114,7 +114,7 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .choices { display: flex; flex-wrap: wrap; gap: 8px; }
 .choice { border: 1.5px solid var(--line); background: var(--surface); border-radius: var(--r); padding: 10px 14px; cursor: pointer; text-align: left; display: grid; gap: 2px; min-width: 0; }
 .choice b { font-weight: 700; }
-.choice span { font-size: .85rem; color: var(--muted); }
+.choice > span { font-size: .85rem; color: var(--muted); }
 .choice[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); background: var(--surface-2); }
 .choice.compact { padding: 8px 14px; }
 
@@ -144,7 +144,10 @@ kbd { font-family: var(--font-mono); font-size: .78em; border: 1px solid var(--l
 .legend-item b { overflow-wrap: anywhere; }
 .legend-item i { width: 14px; height: 14px; border-radius: 3px; margin-top: 3px; }
 .legend-item b { font-size: .92rem; }
-.legend-item span { grid-column: 2; color: var(--muted); }
+.legend-item > span { grid-column: 2; color: var(--muted); }
+.bi { display: inline-grid; max-width: 100%; }
+.bi > * { grid-area: 1 / 1; }
+.bi > .bi-ghost { visibility: hidden; }
 
 /* ---------- workbench ---------- */
 .progress { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
@@ -265,17 +268,15 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
 #level-choices.off { opacity: .45; }
 /* a tall START beside two labelled rows: Antal ord / Hvilke ord (the word count sits beside the name) */
 .start-top { display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: stretch; }
-.start-top #btn-start { min-height: 48px; padding-inline: 32px; font-size: 1.15rem; letter-spacing: .06em; }
-.settings { display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; align-items: center; }
+.start-btns .btn { min-height: 48px; padding-inline: 12px; font-size: 1.1rem; letter-spacing: .04em; justify-content: center; text-align: center; }
+.settings { display: grid; grid-template-columns: 6.5rem 1fr; gap: 10px 12px; align-items: center; }
 .settings .label { white-space: nowrap; }
 .start-top .choice { min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.start-top .choice span { font-variant-numeric: tabular-nums; }
+.start-top .choice > span { font-variant-numeric: tabular-nums; }
 /* room for the longest count ("4.373 ord"), so the buttons keep their size when the level changes */
-#vocab-choices .choice span { min-width: 5ch; text-align: left; }
-.start-top #btn-start { justify-content: center; text-align: center; }
-/* START on top, "Læs ordene" (read mode: every word shown already split) under it */
-.start-btns { display: grid; grid-template-rows: 1fr auto; gap: 8px; }
-.start-btns #btn-read { justify-content: center; font-size: .9rem; padding: 8px 12px; }
+#vocab-choices .choice > span { min-width: 5ch; text-align: left; }
+/* Træn and Læs (read mode: every word shown already split): two equal buttons */
+.start-btns { display: grid; grid-template-rows: 1fr 1fr; gap: 8px; width: 8rem; }
 /* both rows of options fill the space beside START, in equal columns */
 #count-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 #vocab-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -283,7 +284,7 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
 @media (max-width: 900px) {
   #vocab-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
   #vocab-choices .choice { display: grid; gap: 2px; justify-items: center; text-align: center; min-height: 0; padding: 8px 6px; }
-  #vocab-choices .choice span { min-width: 0; text-align: center; }
+  #vocab-choices .choice > span { min-width: 0; text-align: center; }
 }
 .lvl-note { display: none; font-size: .88rem; color: var(--muted); }
 .lvl-note .lex { font-family: var(--font-mono); color: var(--fg); white-space: nowrap; }
@@ -296,12 +297,12 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
   #vocab-choices .choice { display: grid; gap: 2px; min-height: 0; }
   #count-choices { gap: 5px; }
   #split-actions #btn-check { flex: 1 1 100%; }
-  .start-btns { grid-template-rows: none; grid-template-columns: 2fr 1fr; }
+  .start-btns { grid-template-rows: none; grid-template-columns: 1fr 1fr; width: auto; }
   #vocab-choices .choice b { font-size: .92rem; white-space: nowrap; }
   #v-start .choice { padding: 8px 6px; text-align: center; justify-items: center; }
   #v-start .choice b { font-size: .92rem; }
-  #v-start .choice span { font-size: .78rem; }
-  .choice.level span { display: none; }
+  #v-start .choice > span { font-size: .78rem; }
+  .choice.level > span { display: none; }
   .lvl-note { display: block; }
 }
 .choice:disabled { opacity: .45; cursor: not-allowed; }
@@ -388,8 +389,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   <section id="v-start" class="card start">
     <div class="start-top">
       <div class="start-btns">
-        <button class="btn primary" id="btn-start" data-i="start">START</button>
-        <button class="btn" id="btn-read" data-i="readBtn">Læs ordene</button>
+        <button class="btn primary" id="btn-start" data-i="start">Træn</button>
+        <button class="btn primary" id="btn-read" data-i="readBtn">Læs</button>
       </div>
       <div class="settings">
         <span class="label" data-i="count">Antal ord</span>
@@ -532,7 +533,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <script>
 /* Version shown at the bottom of every page. Raise it with every published change
    (major.minor: minor for fixes and small changes, major for a new word pool or a big redesign). */
-const VERSION = "2.13", VERSION_DATE = "2026-11-11";
+const VERSION = "2.14", VERSION_DATE = "2026-11-11";
 document.getElementById("version").textContent = `ord-et ${VERSION} · ${VERSION_DATE}`;
 /* =====================================================================
    WORD LISTS  (same text format as the import box)
@@ -726,7 +727,7 @@ const STR = {
     count: "Antal ord", countAll: "Alle", which: "Hvilke ord",
     vocab_common: "Almindelige", vocab_all: "Alle ord", vocab_mistakes: "Mine fejlord",
     nWords: n => `${n} ord`,
-    start: "START",
+    start: "Træn",
     credit: `Hvert ord er tjekket mod <a href="https://ordregister.dk" target="_blank" rel="noopener">Det Centrale Ordregister</a> (Dansk Sprognævn), og delingen er bekræftet af Wiktionary, DanNet eller COR.SEM. Ordene er udvalgt efter hvor almindelige de er med <a href="https://github.com/rspeer/wordfreq" target="_blank" rel="noopener">wordfreq</a>. Er du uenig i en deling, så tryk <b>Forkert deling?</b>.`,
     hist: "Dine seneste runder (kun på denne enhed)",
     reset: "Nulstil", resetQ: "Slet alle resultater?", resetYes: "Ja, slet", resetNo: "Fortryd",
@@ -737,7 +738,7 @@ const STR = {
     searchPh: "Søg efter et ord …", searchNone: "Ingen ord i ordpuljen passer",
     wordOf: (i, n) => `Ord ${i} af ${n}`, points: p => `Point ${p}`,
     instr: "<b>Klik mellem bogstaverne</b> for at dele ordet. Klik igen for at fjerne en streg.",
-    readBtn: "Læs ordene", prev: "← Forrige", readDone: "Færdig", readInstr: "<b>Læs ordene:</b> hvert ord er vist delt i morfemer. Se hvordan det er gjort, og gå videre, når du er klar.",
+    readBtn: "Læs", prev: "← Forrige", readDone: "Færdig", readInstr: "<b>Læs ordene:</b> hvert ord er vist delt i morfemer. Se hvordan det er gjort, og gå videre, når du er klar.",
     readLabel: " · læsning",
     ruleBtn: "Regel", ruleH: "Regler der passer til ordet", ruleOpen: "Åbn i regelbogen →", ruleRoot: "Ordet er ét rodmorfem – det skal ikke deles.",
     ruleCompound: "Ordet er sat sammen af flere rødder.",
@@ -774,10 +775,10 @@ const STR = {
     lvlDesc_let: "Short words: one ending, or two words put together",
     lvlDesc_mellem: "Three morphemes, or a prefix / derivational suffix",
     lvlDesc_svaer: "Long words with many morphemes of several kinds",
-    count: "Number of words", countAll: "All", which: "Which words",
+    count: "How many", countAll: "All", which: "Which words",
     vocab_common: "Common", vocab_all: "All words", vocab_mistakes: "My mistakes",
     nWords: n => `${n} words`,
-    start: "START",
+    start: "Practise",
     credit: `Every word is checked against <a href="https://ordregister.dk" target="_blank" rel="noopener">Det Centrale Ordregister</a> (the Danish Language Council), and its split is confirmed by Wiktionary, DanNet or COR.SEM. The words are chosen by how common they are using <a href="https://github.com/rspeer/wordfreq" target="_blank" rel="noopener">wordfreq</a>. If you disagree with a split, press <b>Wrong split?</b>.`,
     hist: "Your recent rounds (this device only)",
     reset: "Reset", resetQ: "Delete all results?", resetYes: "Yes, delete", resetNo: "Cancel",
@@ -788,7 +789,7 @@ const STR = {
     searchPh: "Search for a word …", searchNone: "No word in the pool matches",
     wordOf: (i, n) => `Word ${i} of ${n}`, points: p => `Points ${p}`,
     instr: "<b>Click between the letters</b> to split the word. Click again to remove a line.",
-    readBtn: "Read the words", prev: "← Back", readDone: "Done", readInstr: "<b>Read the words:</b> each word is shown split into morphemes. See how it is done and go on when you are ready.",
+    readBtn: "Read", prev: "← Back", readDone: "Done", readInstr: "<b>Read the words:</b> each word is shown split into morphemes. See how it is done and go on when you are ready.",
     readLabel: " · reading",
     ruleBtn: "Rule", ruleH: "Rules that fit this word", ruleOpen: "Open in the rule book →", ruleRoot: "The word is a single root – it should not be split.",
     ruleCompound: "The word is made of several roots.",
@@ -822,6 +823,14 @@ function t(k, ...a) {
   const v = STR[prefs.lang][k] ?? STR.da[k];
   return typeof v === "function" ? v(...a) : v;
 }
+/* the text in the current language, with the other language invisible in the same spot: the box is always as
+   big as the longer of the two, so the page does not jump when the language is switched */
+function both(cur, other, html = false) {
+  const f = html ? x => x : esc;
+  return `<span class="bi"><span>${f(cur)}</span><span class="bi-ghost" aria-hidden="true">${f(other)}</span></span>`;
+}
+const otherLang = () => prefs.lang === "en" ? "da" : "en";
+const tBoth = (k, html) => both(t(k), STR[otherLang()][k] ?? STR.da[k], html);
 const fmt = x => x.toLocaleString(t("locale"));
 
 const TYPES = {
@@ -991,9 +1000,13 @@ document.querySelectorAll(".tab[data-view]").forEach(b => b.addEventListener("cl
 function applyStatic() {
   document.documentElement.lang = prefs.lang;
   document.documentElement.style.setProperty("--miss-label", JSON.stringify(t("missLabel")));
-  document.querySelectorAll("[data-i]").forEach(el => { el.textContent = t(el.dataset.i); });
+  document.querySelectorAll("[data-i]").forEach(el => {
+    // on the start page both languages take the same room; elsewhere just the text
+    if (el.closest("#v-start, header") && typeof STR.da[el.dataset.i] === "string") el.innerHTML = tBoth(el.dataset.i);
+    else el.textContent = t(el.dataset.i);
+  });
   document.querySelectorAll("[data-ph]").forEach(el => { el.placeholder = t(el.dataset.ph); el.setAttribute("aria-label", t(el.dataset.ph)); });
-  document.querySelectorAll("[data-ih]").forEach(el => { el.innerHTML = t(el.dataset.ih); });
+  document.querySelectorAll("[data-ih]").forEach(el => { el.innerHTML = el.closest("#v-start") ? tBoth(el.dataset.ih, true) : t(el.dataset.ih); });
   document.querySelectorAll(".tab[data-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === prefs.lang));
   resetBox(false);
 }
@@ -1216,7 +1229,7 @@ function renderStart() {
   $("demo").innerHTML = morphHTML(["bad", "e", "vær", "else", "t"], ["R", "L", "R", "A", "B"]);
   requestAnimationFrame(fitMorphs);
   $("legend").innerHTML = TYPE_ORDER.map(k =>
-    `<div class="legend-item"><i style="background:var(--t-${k})"></i><b>${TY(k).long}</b><span>${TY(k).what}</span></div>`).join("");
+    `<div class="legend-item"><i style="background:var(--t-${k})"></i><b>${both(TY(k).long, TYPES[k][otherLang()].long)}</b><span>${both(TY(k).what, TYPES[k][otherLang()].what)}</span></div>`).join("");
   document.querySelectorAll("#level-choices .choice").forEach(b => b.setAttribute("aria-pressed", b.dataset.level === prefs.level));
   const lb = document.querySelector(`#level-choices [data-level="${prefs.level}"]`);
   $("lvl-note").innerHTML = `${esc(t("lvlDesc_" + prefs.level))} · ${lb.querySelector(".lex").textContent.split(" · ").map(x => `<span class="lex">${esc(x)}</span>`).join(" · ")}`;
