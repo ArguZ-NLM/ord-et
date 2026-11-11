@@ -257,6 +257,9 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
 .start-top .choice { min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .start-top .choice span { font-variant-numeric: tabular-nums; }
 .start-top #btn-start { justify-content: center; text-align: center; }
+/* "7 af 1.226 ord" right after the number buttons, always on one line */
+.count-row { display: flex; align-items: center; gap: 14px; min-width: 0; }
+#start-summary { font-size: .88rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
 /* narrower screens: the word count goes under the name so the three choices stay on one line */
 @media (max-width: 900px) {
   #vocab-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
@@ -271,7 +274,10 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
   .settings { grid-template-columns: 1fr; gap: 6px; }
   .settings .choices + .label { margin-top: 8px; }
   #vocab-choices .choice { display: grid; gap: 2px; min-height: 0; }
-  #count-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  #count-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; flex: 1; min-width: 0; }
+  .count-row { gap: 10px; }
+  #start-summary { font-size: .82rem; }
+  #vocab-choices .choice b { font-size: .92rem; white-space: nowrap; }
   #v-start .choice { padding: 8px 6px; text-align: center; justify-items: center; }
   #v-start .choice b { font-size: .92rem; }
   #v-start .choice span { font-size: .78rem; }
@@ -364,11 +370,14 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <button class="btn primary" id="btn-start" data-i="start">START</button>
       <div class="settings">
         <span class="label" data-i="count">Antal ord</span>
+        <div class="count-row">
         <div class="choices" id="count-choices">
           <button class="choice compact" data-count="7" aria-pressed="false"><b>7</b></button>
           <button class="choice compact" data-count="15" aria-pressed="true"><b>15</b></button>
           <button class="choice compact" data-count="30" aria-pressed="false"><b>30</b></button>
           <button class="choice compact" data-count="0" aria-pressed="false"><b data-i="countAll">Alle</b></button>
+        </div>
+        <span class="muted" id="start-summary"></span>
         </div>
         <span class="label" data-i="which">Hvilke ord</span>
         <div class="choices" id="vocab-choices">
@@ -378,7 +387,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         </div>
       </div>
     </div>
-    <span class="muted" id="start-summary" style="font-size:.88rem;margin-top:-14px"></span>
     <button class="btn small" id="btn-test-perfect" hidden style="justify-self:start">🎉 Test: perfekt runde</button>
     <div style="display:grid;gap:10px">
       <span class="label" data-i="lvl">Niveau</span>
@@ -496,7 +504,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <script>
 /* Version shown at the bottom of every page. Raise it with every published change
    (major.minor: minor for fixes and small changes, major for a new word pool or a big redesign). */
-const VERSION = "2.3", VERSION_DATE = "2026-11-11";
+const VERSION = "2.4", VERSION_DATE = "2026-11-11";
 document.getElementById("version").textContent = `ord-et ${VERSION} · ${VERSION_DATE}`;
 /* =====================================================================
    WORD LISTS  (same text format as the import box)
@@ -691,8 +699,8 @@ const STR = {
     vocab_common: "Almindelige", vocab_all: "Alle ord", vocab_mistakes: "Mine fejlord",
     nWords: n => `${n} ord`,
     start: "START",
-    summary: (n, common, lvl, total) => `${n} tilfældige ${common ? "almindelige " : ""}ord på niveau ${lvl.toLowerCase()} (ud af ${total})`,
-    summaryMis: (n, total) => `${n} af dine ${total} fejlord (fra alle niveauer)`,
+    summary: (n, common, lvl, total) => `${n} af ${total} ord`,
+    summaryMis: (n, total) => `${n} af ${total} fejlord`, summaryAll: total => `alle ${total} ord`,
     credit: `Hvert ord er tjekket mod <a href="https://ordregister.dk" target="_blank" rel="noopener">Det Centrale Ordregister</a> (Dansk Sprognævn), og delingen er bekræftet af Wiktionary, DanNet eller COR.SEM. Ordene er udvalgt efter hvor almindelige de er med <a href="https://github.com/rspeer/wordfreq" target="_blank" rel="noopener">wordfreq</a>. Er du uenig i en deling, så tryk <b>Forkert deling?</b>.`,
     hist: "Dine seneste runder (kun på denne enhed)",
     reset: "Nulstil", resetQ: "Slet alle resultater?", resetYes: "Ja, slet", resetNo: "Fortryd",
@@ -741,8 +749,8 @@ const STR = {
     vocab_common: "Common", vocab_all: "All words", vocab_mistakes: "My mistakes",
     nWords: n => `${n} words`,
     start: "START",
-    summary: (n, common, lvl, total) => `${n} random ${common ? "common " : ""}words, level ${lvl.toLowerCase()} (out of ${total})`,
-    summaryMis: (n, total) => `${n} of your ${total} mistake words (all levels)`,
+    summary: (n, common, lvl, total) => `${n} of ${total} words`,
+    summaryMis: (n, total) => `${n} of ${total} mistake words`, summaryAll: total => `all ${total} words`,
     credit: `Every word is checked against <a href="https://ordregister.dk" target="_blank" rel="noopener">Det Centrale Ordregister</a> (the Danish Language Council), and its split is confirmed by Wiktionary, DanNet or COR.SEM. The words are chosen by how common they are using <a href="https://github.com/rspeer/wordfreq" target="_blank" rel="noopener">wordfreq</a>. If you disagree with a split, press <b>Wrong split?</b>.`,
     hist: "Your recent rounds (this device only)",
     reset: "Reset", resetQ: "Delete all results?", resetYes: "Yes, delete", resetNo: "Cancel",
@@ -1223,7 +1231,7 @@ function updateStartSummary() {
   $("level-choices").classList.toggle("off", prefs.vocab === "mistakes");
   const pool = mixedPool();
   const n = prefs.count === 0 ? pool.length : Math.min(prefs.count, pool.length);
-  $("start-summary").textContent = prefs.vocab === "mistakes"
+  $("start-summary").textContent = n === pool.length && prefs.vocab !== "mistakes" ? t("summaryAll", fmt(n)) : prefs.vocab === "mistakes"
     ? t("summaryMis", fmt(n), fmt(pool.length))
     : t("summary", fmt(n), prefs.vocab === "common", levelName(prefs.level), fmt(pool.length));
   $("btn-start").disabled = n === 0;
