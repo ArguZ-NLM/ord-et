@@ -233,6 +233,20 @@ td.mono { font-family: var(--font-mono); white-space: nowrap; }
 .set-head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
 .wordlist { font-family: var(--font-mono); font-size: .9rem; display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--muted); }
 textarea, input[type="text"] { width: 100%; font: inherit; color: var(--fg); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; }
+/* word search with suggestions; picking a word opens it in read mode */
+.search { position: relative; }
+.search input { width: 100%; font: inherit; font-size: 1rem; color: var(--fg); background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r);
+  padding: 11px 14px 11px 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%236b7785' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='m13 13 4 4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: 13px center; }
+.search input:focus { outline: none; border-color: var(--ink); }
+.search-list { position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--r); box-shadow: 0 8px 24px rgb(0 0 0 / .12); max-height: 340px; overflow-y: auto; }
+.search-list li { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+.search-list li[aria-selected="true"], .search-list li:hover { background: var(--surface-2); }
+.search-list li b { font-family: var(--font-mono); font-weight: 600; }
+.search-list li b mark { background: none; color: var(--t-B); }
+.search-list li span { font-size: .8rem; color: var(--muted); white-space: nowrap; }
+.search-list li.none { cursor: default; color: var(--muted); background: none; }
 textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; resize: vertical; }
 .format { background: var(--surface-2); border-radius: 10px; padding: 14px 16px; font-size: .9rem; display: grid; gap: 8px; }
 .format pre { margin: 0; font-family: var(--font-mono); font-size: .88rem; overflow-x: auto; }
@@ -407,6 +421,11 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         </div>
       <p class="lvl-note" id="lvl-note"></p>
     </div>
+    <div class="search" role="search">
+      <input type="search" id="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-list"
+             autocomplete="off" autocapitalize="off" spellcheck="false" data-ph="searchPh">
+      <ul class="search-list" id="search-list" role="listbox" hidden></ul>
+    </div>
     <div class="row spread" style="align-items:flex-start">
       <div style="display:grid;gap:8px;max-width:52ch">
         <h2 data-i="introH">Ord er bygget af klodser</h2>
@@ -518,7 +537,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <script>
 /* Version shown at the bottom of every page. Raise it with every published change
    (major.minor: minor for fixes and small changes, major for a new word pool or a big redesign). */
-const VERSION = "2.9", VERSION_DATE = "2026-11-11";
+const VERSION = "2.10", VERSION_DATE = "2026-11-11";
 document.getElementById("version").textContent = `ord-et ${VERSION} · ${VERSION_DATE}`;
 /* =====================================================================
    WORD LISTS  (same text format as the import box)
@@ -721,7 +740,8 @@ const STR = {
     repLabel: n => `Mine rapporterede ord (${n})`, repCopy: "Kopiér listen", repCopied: "Kopieret ✓", repRestore: "Sæt alle tilbage",
     repHelp: "Ord du har markeret som forkert delt. De er fjernet fra din ordpulje. Tryk × for at sætte et ord tilbage, eller kopiér listen og send den til den, der laver siden.",
     repUndo: w => `Sæt ${w} tilbage`, repCopyHelp: "Markér teksten og kopiér den:",
-    labelLevel: lvl => `Niveau: ${lvl}`, labelCommon: " · almindelige ord", labelMis: "Fejlord",
+    labelLevel: lvl => `Niveau: ${lvl}`, labelCommon: " · almindelige ord", labelMis: "Fejlord", labelSearch: "Søgning",
+    searchPh: "Søg efter et ord …", searchNone: "Ingen ord i ordpuljen passer",
     wordOf: (i, n) => `Ord ${i} af ${n}`, points: p => `Point ${p}`,
     instr: "<b>Klik mellem bogstaverne</b> for at dele ordet. Klik igen for at fjerne en streg.",
     readBtn: "Læs ordene", prev: "← Forrige", readDone: "Færdig", readInstr: "<b>Læs ordene:</b> hvert ord er vist delt i morfemer. Se hvordan det er gjort, og gå videre, når du er klar.",
@@ -773,7 +793,8 @@ const STR = {
     repLabel: n => `My reported words (${n})`, repCopy: "Copy the list", repCopied: "Copied ✓", repRestore: "Put all back",
     repHelp: "Words you marked as wrongly split. They are removed from your word pool. Press × to put a word back, or copy the list and send it to the person who makes the site.",
     repUndo: w => `Put ${w} back`, repCopyHelp: "Select the text and copy it:",
-    labelLevel: lvl => `Level: ${lvl}`, labelCommon: " · common words", labelMis: "Mistake words",
+    labelLevel: lvl => `Level: ${lvl}`, labelCommon: " · common words", labelMis: "Mistake words", labelSearch: "Search",
+    searchPh: "Search for a word …", searchNone: "No word in the pool matches",
     wordOf: (i, n) => `Word ${i} of ${n}`, points: p => `Points ${p}`,
     instr: "<b>Click between the letters</b> to split the word. Click again to remove a line.",
     readBtn: "Read the words", prev: "← Back", readDone: "Done", readInstr: "<b>Read the words:</b> each word is shown split into morphemes. See how it is done and go on when you are ready.",
@@ -1262,6 +1283,50 @@ $("vocab-choices").addEventListener("click", e => { const b = e.target.closest("
 $("count-choices").addEventListener("click", e => { const b = e.target.closest(".choice"); if (!b) return; prefs.count = +b.dataset.count; savePrefs(); renderStart(); });
 $("btn-start").addEventListener("click", () => startSession());
 $("btn-read").addEventListener("click", () => startSession(null, true));
+
+/* ---------- word search: words that start with what is typed first, then words that contain it (common words first) ---------- */
+const ALL_ITEMS = (() => { const seen = new Set(); return [CURATED, ...AUTO_ITEMS].flat().filter(it => !seen.has(it.word) && seen.add(it.word)); })();
+let searchHits = [], searchSel = -1;
+function renderSearch() {
+  const q = $("search").value.trim().toLowerCase(), list = $("search-list");
+  if (!q) { list.hidden = true; $("search").setAttribute("aria-expanded", "false"); searchHits = []; return; }
+  const starts = [], has = [];
+  for (const it of ALL_ITEMS) {
+    if (it.word.startsWith(q)) starts.push(it); else if (it.word.includes(q)) has.push(it);
+    if (starts.length >= 8) break;
+  }
+  starts.sort((a, b) => (b.word === q) - (a.word === q));   // the exact word first
+  searchHits = starts.concat(has).slice(0, 8);
+  searchSel = searchHits.length ? 0 : -1;
+  const mark = w => { const i = w.indexOf(q); return esc(w.slice(0, i)) + "<mark>" + esc(q) + "</mark>" + esc(w.slice(i + q.length)); };
+  list.innerHTML = searchHits.length
+    ? searchHits.map((it, i) => `<li role="option" id="sh-${i}" data-i="${i}" aria-selected="${i === searchSel}"><b>${mark(it.word)}</b><span>${esc(levelName(levelOf(it)))}</span></li>`).join("")
+    : `<li class="none">${esc(t("searchNone"))}</li>`;
+  list.hidden = false; $("search").setAttribute("aria-expanded", "true");
+  $("search").setAttribute("aria-activedescendant", searchSel >= 0 ? "sh-" + searchSel : "");
+}
+function moveSearch(d) {
+  if (!searchHits.length) return;
+  searchSel = (searchSel + d + searchHits.length) % searchHits.length;
+  $("search-list").querySelectorAll("li").forEach((li, i) => li.setAttribute("aria-selected", i === searchSel));
+  $("search").setAttribute("aria-activedescendant", "sh-" + searchSel);
+  $("sh-" + searchSel).scrollIntoView({ block: "nearest" });
+}
+function pickSearch(i) {
+  const it = searchHits[i]; if (!it) return;
+  $("search").value = ""; renderSearch(); $("search").blur();
+  startSession([it], true);
+}
+$("search").addEventListener("input", renderSearch);
+$("search").addEventListener("keydown", e => {
+  if (e.key === "ArrowDown") { e.preventDefault(); moveSearch(1); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); moveSearch(-1); }
+  else if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); pickSearch(searchSel); }   // not the practice Enter (= next word)
+  else if (e.key === "Escape") { $("search").value = ""; renderSearch(); }
+});
+$("search-list").addEventListener("mousedown", e => { const li = e.target.closest("li[data-i]"); if (li) { e.preventDefault(); pickSearch(+li.dataset.i); } });
+$("search").addEventListener("blur", () => setTimeout(() => { $("search-list").hidden = true; $("search").setAttribute("aria-expanded", "false"); }, 100));
+$("search").addEventListener("focus", () => { if ($("search").value.trim()) renderSearch(); });
 function resetBox(asking) {
   $("reset-box").innerHTML = asking
     ? `<span class="muted" style="font-size:.88rem">${t("resetQ")}</span><button class="btn small danger" id="btn-reset-yes">${t("resetYes")}</button><button class="btn small" id="btn-reset-no">${t("resetNo")}</button>`
@@ -1284,6 +1349,7 @@ function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { co
 // a round's label is rebuilt in the current language every time it is shown
 function roundLabel(k) {
   if (k.set && !k.level && !k.kind) return k.set;   // results saved before the language option
+  if (k.kind === "search") return t("labelSearch");
   if (k.kind === "mistakes" || k.kind === "retry") return t("labelMis");
   return t("labelLevel", levelName(k.level)) + (k.vocab === "common" ? t("labelCommon") : "");
 }
@@ -1291,7 +1357,7 @@ function roundLabel(k) {
 function startSession(items, read = false) {
   let pool = items || shuffle(mixedPool());
   if (!items && prefs.count) pool = pool.slice(0, prefs.count);
-  const kind = items ? { kind: "retry" } : prefs.vocab === "mistakes" ? { kind: "mistakes" } : { kind: "level", level: prefs.level, vocab: prefs.vocab };
+  const kind = items && read ? { kind: "search" } : items ? { kind: "retry" } : prefs.vocab === "mistakes" ? { kind: "mistakes" } : { kind: "level", level: prefs.level, vocab: prefs.vocab };
   session = { items: pool, idx: 0, kind, results: [], finished: false, read };
   show("practice");
   loadWord();
@@ -1302,7 +1368,7 @@ const points = () => session.results.reduce((s, r) => s + (!r.reported && r.spli
 
 function renderPracticeChrome() {
   if (!session) return;
-  $("p-set").textContent = roundLabel(session.kind) + (session.read ? t("readLabel") : "");
+  $("p-set").textContent = roundLabel(session.kind) + (session.read && session.kind.kind !== "search" ? t("readLabel") : "");
   $("p-count").textContent = t("wordOf", session.idx + 1, session.items.length);
   $("p-score").textContent = session.read ? "" : t("points", points());
   $("p-instr").innerHTML = t(session.read ? "readInstr" : "instr");
