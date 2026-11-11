@@ -24,5 +24,10 @@ Run them from a folder that has the data in `w/dl/`, with `python3 -I`, in order
    a word another common reading would split differently (`bønner`, `arbejderne`), a word where verb stem + e and a noun in -e compete
    (`spise-bord` / `spis-e-bord`), and words on the school blocklist.
 
+`6_readings.py` runs after `4_build_pool.py`: a doubled consonant becomes its own piece (`snitt-et` → `snit-t-et RDB`, type D:
+the root stays the dictionary word, the extra letter is spelling), and a word COR also reads another way gets that reading as an
+accepted alternative tagged with word class and base word (`snit-t-et RDB sb=snit / snitt-et RB vb=snitte`,
+`tjen-er RB vb=tjene / tjen-er RA sb=tjener`).
+
 `4_build_pool.py` writes the pool (most common first) and removes hand-made examples that fail; `5_meanings.py` writes `meanings.json`
 (DanNet for the right word class, else Danish Wiktionary, else DanNet's text cut at the last whole word; English from Wiktionary).
