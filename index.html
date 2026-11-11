@@ -279,6 +279,7 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
   #vocab-choices .choice { display: grid; gap: 2px; min-height: 0; }
   #count-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; flex: 1; min-width: 0; }
   .count-row { gap: 10px; }
+  #split-actions #btn-check { flex: 1 1 100%; }
   #start-summary { font-size: .82rem; }
   #vocab-choices .choice b { font-size: .92rem; white-space: nowrap; }
   #v-start .choice { padding: 8px 6px; text-align: center; justify-items: center; }
@@ -453,6 +454,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         <button class="btn small" id="btn-hint" data-i="hint">Hint</button>
         <button class="btn small" id="btn-rule" data-i="ruleBtn" aria-expanded="false">Regel</button>
         <button class="btn small" id="btn-clear" data-i="clear">Ryd</button>
+        <button class="btn small" id="btn-quit-split" data-i="quit">Afslut runden</button>
         <span class="muted" id="hint-text" style="font-size:.9rem"></span>
       </div>
       <button class="btn primary" id="btn-check" data-i="check">Tjek deling</button>
@@ -506,7 +508,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <script>
 /* Version shown at the bottom of every page. Raise it with every published change
    (major.minor: minor for fixes and small changes, major for a new word pool or a big redesign). */
-const VERSION = "2.6", VERSION_DATE = "2026-11-11";
+const VERSION = "2.7", VERSION_DATE = "2026-11-11";
 document.getElementById("version").textContent = `ord-et ${VERSION} · ${VERSION_DATE}`;
 /* =====================================================================
    WORD LISTS  (same text format as the import box)
@@ -1525,6 +1527,8 @@ $("btn-next").addEventListener("click", () => {
   else endSession();
 });
 $("btn-quit").addEventListener("click", () => endSession(true));
+// quitting before the current word is checked: that word does not count; with nothing done, back to the start page
+$("btn-quit-split").addEventListener("click", () => { if (session.results.length) endSession(true); else { session.finished = true; show("start"); renderStart(); } });
 
 /* ---------- keyboard ---------- */
 document.addEventListener("keydown", e => {
