@@ -292,11 +292,6 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
 .rep-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .rep-chip { display: inline-flex; align-items: center; gap: 2px; border: 1px solid var(--line); border-radius: 99px; padding: 2px 4px 2px 10px; background: var(--surface-2); font-size: .9rem; }
 .rep-chip .mono { font-family: var(--font-mono); }
-.rep-chip.sent { opacity: .6; }
-.rep-chip.sent .mono::after { content: " ✓"; color: var(--ok); }
-.rep-send { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.rep-send input { flex: 1 1 220px; min-width: 0; font: inherit; font-size: .92rem; padding: 8px 10px; border: 1.5px solid var(--line); border-radius: var(--r); background: var(--surface); color: var(--fg); }
-#rep-status { font-size: .88rem; }
 .rep-chip button { border: 0; background: none; cursor: pointer; color: var(--muted); font-size: 1.05rem; line-height: 1; padding: 2px 6px; border-radius: 99px; }
 .rep-chip button:hover { color: var(--bad); }
 #rep-copybox { width: 100%; font-family: var(--font-mono); font-size: .9rem; color: var(--fg); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; }
@@ -432,11 +427,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <p class="muted" style="font-size:.85rem" data-i="repHelp"></p>
       <div class="rep-list" id="rep-list"></div>
       <textarea id="rep-copybox" readonly hidden style="min-height:90px"></textarea>
-      <div class="rep-send" id="rep-send" hidden>
-        <input type="text" id="rep-comment" maxlength="300" autocomplete="off" data-ph="repComment">
-        <button class="btn primary small" id="btn-rep-send"></button>
-        <span class="muted" id="rep-status" role="status" aria-live="polite"></span>
-      </div>
     </div>
   </section>
 
@@ -516,7 +506,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <script>
 /* Version shown at the bottom of every page. Raise it with every published change
    (major.minor: minor for fixes and small changes, major for a new word pool or a big redesign). */
-const VERSION = "2.5", VERSION_DATE = "2026-11-11";
+const VERSION = "2.6", VERSION_DATE = "2026-11-11";
 document.getElementById("version").textContent = `ord-et ${VERSION} · ${VERSION_DATE}`;
 /* =====================================================================
    WORD LISTS  (same text format as the import box)
@@ -717,10 +707,8 @@ const STR = {
     hist: "Dine seneste runder (kun på denne enhed)",
     reset: "Nulstil", resetQ: "Slet alle resultater?", resetYes: "Ja, slet", resetNo: "Fortryd",
     repLabel: n => `Mine rapporterede ord (${n})`, repCopy: "Kopiér listen", repCopied: "Kopieret ✓", repRestore: "Sæt alle tilbage",
-    repHelp: "Ord du har markeret som forkert delt. De er fjernet fra din ordpulje. Tryk × for at sætte et ord tilbage. Tryk Send, så får den, der laver siden, listen – du skal ikke logge ind.",
+    repHelp: "Ord du har markeret som forkert delt. De er fjernet fra din ordpulje. Tryk × for at sætte et ord tilbage, eller kopiér listen og send den til den, der laver siden.",
     repUndo: w => `Sæt ${w} tilbage`, repCopyHelp: "Markér teksten og kopiér den:",
-    repComment: "Kommentar (valgfri)", repSend: n => `Send ${n} ${n === 1 ? "ord" : "ord"}`,
-    repSending: "Sender …", repSent: "Sendt ✓ Tak for hjælpen!", repFail: "Kunne ikke sende. Er du på nettet? Prøv igen.", repAllSent: "Alle ord er sendt ✓",
     labelLevel: lvl => `Niveau: ${lvl}`, labelCommon: " · almindelige ord", labelMis: "Fejlord",
     wordOf: (i, n) => `Ord ${i} af ${n}`, points: p => `Point ${p}`,
     instr: "<b>Klik mellem bogstaverne</b> for at dele ordet. Klik igen for at fjerne en streg.",
@@ -769,10 +757,8 @@ const STR = {
     hist: "Your recent rounds (this device only)",
     reset: "Reset", resetQ: "Delete all results?", resetYes: "Yes, delete", resetNo: "Cancel",
     repLabel: n => `My reported words (${n})`, repCopy: "Copy the list", repCopied: "Copied ✓", repRestore: "Put all back",
-    repHelp: "Words you marked as wrongly split. They are removed from your word pool. Press × to put a word back. Press Send and the person who makes the site gets the list – no login needed.",
+    repHelp: "Words you marked as wrongly split. They are removed from your word pool. Press × to put a word back, or copy the list and send it to the person who makes the site.",
     repUndo: w => `Put ${w} back`, repCopyHelp: "Select the text and copy it:",
-    repComment: "Comment (optional)", repSend: n => `Send ${n} ${n === 1 ? "word" : "words"}`,
-    repSending: "Sending …", repSent: "Sent ✓ Thank you for helping!", repFail: "Could not send. Are you online? Try again.", repAllSent: "All words sent ✓",
     labelLevel: lvl => `Level: ${lvl}`, labelCommon: " · common words", labelMis: "Mistake words",
     wordOf: (i, n) => `Word ${i} of ${n}`, points: p => `Points ${p}`,
     instr: "<b>Click between the letters</b> to split the word. Click again to remove a line.",
@@ -913,7 +899,6 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;"
    ===================================================================== */
 let reported = store.get("reported", []);   // words this viewer flagged as wrongly split
 let repInfo = store.get("repInfo", {});     // word -> { student: the viewer's own split when reporting, ts }
-let repSent = store.get("repSent", []);     // reported words already sent to the report sheet
 let mistakes = store.get("mistakes", []);   // words split wrong and not yet got right
 const CURATED = (() => {
   const seen = new Set(), out = [];
@@ -1226,40 +1211,17 @@ function renderReported() {
   $("rep-copybox").hidden = true;
   if (!reported.length) return;
   $("rep-label").textContent = t("repLabel", reported.length);
-  const unsent = reported.filter(w => !repSent.includes(w));
-  $("rep-send").hidden = !REPORT_URL;
-  $("btn-rep-send").textContent = t("repSend", unsent.length);
-  $("btn-rep-send").hidden = $("rep-comment").hidden = !unsent.length;
-  if (!unsent.length && !$("rep-status").textContent) $("rep-status").textContent = t("repAllSent");
   $("rep-list").innerHTML = reportedItems().map(r =>
-    `<span class="rep-chip${repSent.includes(r.word) ? " sent" : ""}"><span class="mono">${esc(r.split)}</span><button data-undo="${esc(r.word)}" aria-label="${esc(t("repUndo", r.word))}" title="${esc(t("repUndo", r.word))}">×</button></span>`).join("");
+    `<span class="rep-chip"><span class="mono">${esc(r.split)}</span><button data-undo="${esc(r.word)}" aria-label="${esc(t("repUndo", r.word))}" title="${esc(t("repUndo", r.word))}">×</button></span>`).join("");
 }
 $("rep-list").addEventListener("click", e => {
   const w = e.target.dataset && e.target.dataset.undo; if (!w) return;
-  reported = reported.filter(x => x !== w); store.set("reported", reported);
-  repSent = repSent.filter(x => x !== w); store.set("repSent", repSent); renderStart();
+  reported = reported.filter(x => x !== w); store.set("reported", reported); renderStart();
 });
-$("btn-rep-restore").addEventListener("click", () => { reported = []; repSent = []; store.set("reported", reported); store.set("repSent", repSent); renderStart(); });
-/* reports go to a Google Sheet (tools/report): no login for the student. Empty = no Send button. */
-const REPORT_URL = "";
-$("btn-rep-send").addEventListener("click", async () => {
-  const items = reportedItems().filter(r => !repSent.includes(r.word))
-    .map(r => ({ word: r.word, app: r.split, student: (repInfo[r.word] || {}).student || "" }));
-  if (!items.length || !REPORT_URL) return;
-  const b = $("btn-rep-send"), st = $("rep-status");
-  b.disabled = true; st.textContent = t("repSending");
-  try {
-    // text/plain keeps it a "simple" request (no CORS preflight); the answer is opaque, so only a network error counts as failure
-    await fetch(REPORT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ v: VERSION, lang: prefs.lang, comment: $("rep-comment").value.trim(), items }) });
-    repSent = [...new Set([...repSent, ...items.map(i => i.word)])]; store.set("repSent", repSent);
-    $("rep-comment").value = "";
-    renderReported(); st.textContent = t("repSent");
-  } catch (err) { st.textContent = t("repFail"); }
-  b.disabled = false;
-});
+$("btn-rep-restore").addEventListener("click", () => { reported = []; store.set("reported", reported); renderStart(); });
 $("btn-rep-copy").addEventListener("click", async () => {
-  const text = "ord-et – forkert delte ord:\n" + reportedItems().map(r => r.split).join("\n");
+  const text = "ord-et – forkert delte ord (appens deling → min deling):\n" +
+    reportedItems().map(r => r.split + (repInfo[r.word] ? " → " + repInfo[r.word].student : "")).join("\n");
   const b = $("btn-rep-copy");
   try { await navigator.clipboard.writeText(text); b.textContent = t("repCopied"); setTimeout(() => { b.textContent = t("repCopy"); }, 1600); }
   catch (err) { const ta = $("rep-copybox"); ta.value = text; ta.hidden = false; ta.focus(); ta.select(); }
