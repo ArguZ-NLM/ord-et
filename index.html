@@ -249,18 +249,28 @@ textarea { font-family: var(--font-mono); font-size: .92rem; min-height: 200px; 
 #level-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); width: 100%; }
 .choice.level { align-content: start; }
 #level-choices.off { opacity: .45; }
-.start-top { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
-.start-top #btn-start { min-height: 48px; padding-inline: 28px; font-size: 1.05rem; letter-spacing: .06em; }
-.count-group { display: grid; gap: 6px; }
+/* a tall START beside two labelled rows: Antal ord / Hvilke ord (the word count sits beside the name) */
+.start-top { display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: stretch; }
+.start-top #btn-start { min-height: 48px; padding-inline: 32px; font-size: 1.15rem; letter-spacing: .06em; }
+.settings { display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; align-items: center; }
+.settings .label { white-space: nowrap; }
+.start-top .choice { min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.start-top .choice span { font-variant-numeric: tabular-nums; }
+.start-top #btn-start { justify-content: center; text-align: center; }
+/* narrower screens: the word count goes under the name so the three choices stay on one line */
+@media (max-width: 900px) {
+  #vocab-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  #vocab-choices .choice { display: grid; gap: 2px; justify-items: center; text-align: center; min-height: 0; padding: 8px 6px; }
+}
 .lvl-note { display: none; font-size: .88rem; color: var(--muted); }
 .lvl-note .lex { font-family: var(--font-mono); color: var(--fg); white-space: nowrap; }
 /* phones: compact options so "Start" is visible without scrolling; the chosen level is explained below the row */
 @media (max-width: 560px) {
   #level-choices, #vocab-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .start-top { gap: 10px; }
-  .start-top #btn-start { padding-inline: 16px; flex: none; }
-  .count-group { flex: 1 1 0; min-width: 0; }
-  .vocab-group { flex-basis: 100%; }
+  .start-top { grid-template-columns: 1fr; gap: 14px; }
+  .settings { grid-template-columns: 1fr; gap: 6px; }
+  .settings .choices + .label { margin-top: 8px; }
+  #vocab-choices .choice { display: grid; gap: 2px; min-height: 0; }
   #count-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
   #v-start .choice { padding: 8px 6px; text-align: center; justify-items: center; }
   #v-start .choice b { font-size: .92rem; }
@@ -352,7 +362,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   <section id="v-start" class="card start">
     <div class="start-top">
       <button class="btn primary" id="btn-start" data-i="start">START</button>
-      <div class="count-group">
+      <div class="settings">
         <span class="label" data-i="count">Antal ord</span>
         <div class="choices" id="count-choices">
           <button class="choice compact" data-count="7" aria-pressed="false"><b>7</b></button>
@@ -360,8 +370,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <button class="choice compact" data-count="30" aria-pressed="false"><b>30</b></button>
           <button class="choice compact" data-count="0" aria-pressed="false"><b data-i="countAll">Alle</b></button>
         </div>
-      </div>
-      <div class="count-group vocab-group">
         <span class="label" data-i="which">Hvilke ord</span>
         <div class="choices" id="vocab-choices">
           <button class="choice compact" data-vocab="common"><b data-i="vocab_common">Almindelige</b><span id="vc-common"></span></button>
@@ -488,7 +496,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <script>
 /* Version shown at the bottom of every page. Raise it with every published change
    (major.minor: minor for fixes and small changes, major for a new word pool or a big redesign). */
-const VERSION = "2.2", VERSION_DATE = "2026-11-11";
+const VERSION = "2.3", VERSION_DATE = "2026-11-11";
 document.getElementById("version").textContent = `ord-et ${VERSION} · ${VERSION_DATE}`;
 /* =====================================================================
    WORD LISTS  (same text format as the import box)
